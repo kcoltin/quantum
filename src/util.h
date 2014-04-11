@@ -5,7 +5,6 @@
 
 extern const double PI;
 
-double ** new_mat (int m, int n); 
 std::complex<double> ** new_cmat (int m, int n); 
 std::complex<double> ** czeros (int m, int n); 
 std::complex<double> ** eyec (int m, int n); 
@@ -50,7 +49,6 @@ bool is_unitary (std::complex<double> **U, int n);
 
 double runif ();
 int rdunif (int a, int b);
-std::complex<double> * rand_coeffs (int n);
 
 int bin_to_int (const std::string bin); 
 std::string int_to_bin (int n, int len); 

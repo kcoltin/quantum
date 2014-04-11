@@ -12,15 +12,6 @@ const double PI = 4. * atan(1.);
 static gsl_rng * init_runif ();
 
 
-// Allocates an m x n matrix. 
-double ** new_mat (int m, int n) {
-	double **A = new double*[m]; 
-	for (int i = 0; i < m; i++) {
-		A[i] = new double[n]; 
-	}
-	return A; 
-} 
-
 // Allocates an m x n complex matrix. 
 complex<double> ** new_cmat (int m, int n) {
 	complex<double> **A = new complex<double>*[m]; 
@@ -413,23 +404,6 @@ static gsl_rng * init_runif () {
 	// (since this function is only called once per program, through runif()). 
 
 	return rng;
-}
-
-
-// Returns a vector of random coefficients for a qubit system of length n.
-// That is, returns a vector of length 2^n of complex numbers whose squared 
-// magnitudes sum to one and whose real and imaginary coefficients are uniformly
-// distributed. 
-complex<double> * rand_coeffs (int n) {
-	complex<double> *z = new complex<double>[(int) pow(2, n)]; 
-
-	for (int i = 0; i < pow(2, n); i++) {
-		z[i] = runif() + runif() * 1i; 
-	}
-
-	// Normalize to 1
-	normalize (z, n); 
-	return z; 
 }
 
 
