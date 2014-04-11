@@ -1,0 +1,1 @@
+/usr/bin/c++  -fPIC -Wall -g   -shared -Wl,-soname,libquantum.so -o ../../lib/libquantum.so CMakeFiles/quantum.dir/__/src/algorithms.cpp.o CMakeFiles/quantum.dir/__/src/gate_factory.cpp.o CMakeFiles/quantum.dir/__/src/quantum.cpp.o CMakeFiles/quantum.dir/__/src/util.cpp.o 

@@ -1,0 +1,2 @@
+/home/kcoltin/Documents/misc/quantum/build/lib/CMakeFiles/quantum.dir
+/home/kcoltin/Documents/misc/quantum/build/test/CMakeFiles/run_tests.dir
