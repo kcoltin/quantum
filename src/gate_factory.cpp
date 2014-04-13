@@ -147,12 +147,12 @@ QuantumGate function_gate (unsigned int (*f) (unsigned int), int m, int k) {
 // Note: at least one source I've see defines the operator as the negative of
 // this matrix; either definition works for Grover's algorithm.
 QuantumGate grover_diffusion_operator (int n) {
-	const double val = 1. / pow(2, n - 1); 
+	const double VAL = 1. / pow(2, n - 1); 
 	QuantumGate gate(n); 
 
 	for (int i = 0; i < pow(2, n); i++) { 
 		for (int j = 0; j < pow(2, n); j++) { 
-			gate.set(i, j, val - (i == j)); 
+			gate.set(i, j, VAL - (i == j)); 
 		}
 	}
 

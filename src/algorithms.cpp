@@ -4,6 +4,7 @@
 #include "algorithms.h"
 #include "gate_factory.h"
 #include "quantum.h"
+#include "util.h"
 #include <cmath>
 #include <stdexcept>
 using std::string;
@@ -13,6 +14,7 @@ namespace quantum_algorithm_simulator {
 static QuantumGate search_oracle (const string &match_text, const string *list, 
                                   int n);
 static QuantumGate function_oracle (int (*f) (int), int y, int n);  
+static int r (int n); 
 
 
 // Grover's quantum algorithm for searching. 
@@ -33,7 +35,7 @@ int grover_search (const string &match_text, const string *list, int n) {
 	const QuantumGate Ud = qgates::grover_diffusion_operator(N); 
 
 	int index; 
-	static const int MAX_ITER = 100; 
+	static const int MAX_ITER = 20; 
 	int count = 0; 
 	// Repeat until a solution is found or the iteration limit is reached
 	do {
@@ -41,7 +43,7 @@ int grover_search (const string &match_text, const string *list, int n) {
 		// apply Hadamard gate to create uniform superposition of all basis states
 		Hn * q; 
 
-		for (int i = 0; i < ceil(sqrt(pow(2, N))); i++) { 
+		for (int i = 0; i < r(pow(2., N)); i++) { 
 			Ui * q; // apply operator that flips the sign of the matching index
 			Ud * q; // apply Grover's diffusion operator 
 		}
@@ -67,7 +69,7 @@ int grover_invert (int (*f) (int), int y, int n) {
 	const QuantumGate Ud = qgates::grover_diffusion_operator(n); 
 
 	int x; 
-	static const int MAX_ITER = 10; 
+	static const int MAX_ITER = 20; 
 	int count = 0; 
 	// Repeat until a solution is found or the iteration limit is reached
 	do {
@@ -75,7 +77,7 @@ int grover_invert (int (*f) (int), int y, int n) {
 		// apply Hadamard gate to create uniform superposition of all basis states
 		Hn * q; 
 
-		for (int i = 0; i < ceil(sqrt(pow(2, n))); i++) { 
+		for (int i = 0; i < r(pow(2., n)); i++) { 
 			Ui * q; // apply operator that flips the sign of the matching input
 			Ud * q; // apply Grover's diffusion operator 
 		}
@@ -118,6 +120,17 @@ static QuantumGate function_oracle (int (*f) (int), int y, int n) {
 
 	return gate; 
 }
+
+
+// Function returning the optimal number of iterations for the algorithm. It is
+// important to stop at exactly this many iterations or else future iterations
+// may actually lower the probability of measuring the correct answer.  
+// See http://www.quantiki.org/wiki/Grover's_search_algorithm.
+static int r (int n) { 
+	double theta = asin(1. / sqrt(n)); 
+	return (int) round((PI / theta - 2.) / 4.); 
+}
+
 
 } // end namespace 
 
