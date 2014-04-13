@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 using std::complex;
 using std::string;
+using namespace quantum_algorithm_simulator; 
 
 // Tests the factory method for producing a Pauli X-gate (aka "not" gate). This
 // is sufficient for testing all the "basic" factory methods since their 

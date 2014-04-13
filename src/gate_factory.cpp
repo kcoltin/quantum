@@ -7,6 +7,7 @@
 #include "util.h"
 using std::complex; 
 
+namespace quantum_algorithm_simulator {
 namespace qgates {
 
 // Factory method for Pauli-X gate (i.e. "not gate")
@@ -159,7 +160,8 @@ QuantumGate grover_diffusion_operator (int n) {
 } 
 
 
-} // end namespace 
+}
+} 
 
 
 /* NOTES

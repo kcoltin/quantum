@@ -6,6 +6,7 @@
 #include <gtest/gtest.h>
 using std::complex;
 using std::string;
+using namespace quantum_algorithm_simulator; 
 
 // Tests measurement of a qubit system 
 TEST (QubitSystemTest, TestMeasure) {

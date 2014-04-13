@@ -8,6 +8,8 @@
 #include <stdexcept>
 using std::string;
 
+namespace quantum_algorithm_simulator {
+
 static QuantumGate search_oracle (const string &match_text, const string *list, 
                                   int n);
 static QuantumGate function_oracle (int (*f) (int), int y, int n);  
@@ -85,9 +87,6 @@ int grover_invert (int (*f) (int), int y, int n) {
 	return f(x) == y ? x : -1; 
 }
 
-
-
-
 // Creates the "quantum oracle/black box" gate used by the Grover search 
 // algorithm. The gate maps a state |k> to  -|k> if the kth item of "list" 
 // matches the text match_text, and maps it to itself otherwise.  
@@ -120,6 +119,7 @@ static QuantumGate function_oracle (int (*f) (int), int y, int n) {
 	return gate; 
 }
 
+} // end namespace 
 
 
 

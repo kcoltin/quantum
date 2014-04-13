@@ -6,6 +6,7 @@
 #include <gtest/gtest.h>
 using std::complex;
 using std::string;
+using namespace quantum_algorithm_simulator; 
 
 // Tolerance for floating-point comparison
 static const double EPS = 1.e-6; 

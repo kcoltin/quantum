@@ -12,6 +12,8 @@ using std::length_error;
 using std::runtime_error;
 using std::invalid_argument;
 
+namespace quantum_algorithm_simulator {
+
 // The constructors just call the corresponding initializer
 QubitSystem::QubitSystem () {
 	this->coeffs = NULL; 
@@ -475,4 +477,4 @@ QuantumGate tensor_pow (const QuantumGate &g, int e) {
 	return g_out; 
 } 
 
-
+} 

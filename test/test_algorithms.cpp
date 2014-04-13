@@ -4,6 +4,7 @@
 #include "quantum.h" 
 #include <gtest/gtest.h>
 using std::string;
+using namespace quantum_algorithm_simulator; 
 
 // Tests Grover's search algorithm
 TEST (AlgorithmsTest, TestGroverSearch) {

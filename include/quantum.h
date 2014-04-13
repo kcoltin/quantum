@@ -3,6 +3,8 @@
 
 #include <complex>
 
+namespace quantum_algorithm_simulator {
+
 class QuantumGate; 
 
 // Represents a system of one or more qubits. 
@@ -94,6 +96,8 @@ class QuantumGate {
 	friend QuantumGate tensor_pow (const QuantumGate &g, int e); 
 };
 
+
+}
 
 #endif 
 
