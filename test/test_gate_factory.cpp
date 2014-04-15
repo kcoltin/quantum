@@ -82,7 +82,7 @@ TEST (GateFactoryTest, TestControlledGate) {
 // function. 
 // Function f shifts the bit sequence x to the right by two, equivalent to 
 // dividing by 4 and rounding down to the nearest integer.  
-static unsigned int f (unsigned int x) { unsigned int y = x >> 2; return y; } 
+static int f (int x) { int y = x >> 2; return y; } 
 TEST (GateFactoryTest, TestFunctionGate) {
 	static const int M = 4;
 	static const int K = 2;

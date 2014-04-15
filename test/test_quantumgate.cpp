@@ -95,7 +95,7 @@ TEST (QuantumGateTest, TestSum) {
 	}
 
 	static const double THETA = PI / 3.;
-	static const complex<double> thetai = THETA * 1.i;
+	static const complex<double> thetai(0., THETA);
 	// Test that phase shift gate plus Z gate equals this matrix
 	static const complex<double> MATRIX[][2] = {{2., 0.},
 	                                            {0., exp(thetai) - 1.}};  
@@ -114,8 +114,8 @@ TEST (QuantumGateTest, TestSum) {
 // Tests the operation of taking the matrix product of two quantum gates. 
 TEST (QuantumGateTest, TestMatrixProduct) {
 	// The product of the Y and Z gates is the gate with this matrix
-	static const complex<double> YZ_MATRIX[][2] = {{ 0., 1.i},
-	                                               {1.i,  0.}};
+	static const complex<double> YZ_MATRIX[][2] = {{ 0.,       {0., 1.}},
+	                                               {{0., 1.},  0.}};
 	QuantumGate Y = qgates::y_gate(); 
 	const QuantumGate Z = qgates::z_gate(); 
 	const QuantumGate YZ = Y * Z; 
@@ -154,10 +154,10 @@ TEST (QuantumGateTest, TestMatrixProduct) {
 // Test the tensor product of two quantum gates.
 TEST (QuantumGateTest, TestTensorProduct) {
 	// The product of the Y and Z gates is the gate with this matrix
-	static const complex<double> YZ_MATRIX[][4] = {{0., 0., -1.i, 0.},
-	                                               {0., 0., 0., 1.i},
-	                                               {1.i, 0., 0., 0.},
-	                                               {0., -1.i, 0., 0.}};
+	static const complex<double> YZ_MATRIX[][4] = {{0., 0., {0., -1.}, 0.},
+	                                               {0., 0., 0., {0., 1.}},
+	                                               {{0., 1.}, 0., 0., 0.},
+	                                               {0., {0., -1.}, 0., 0.}};
 	QuantumGate Y = qgates::y_gate(); 
 	const QuantumGate Z = qgates::z_gate(); 
 	const QuantumGate YZ = Y % Z; 
