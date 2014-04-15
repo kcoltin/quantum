@@ -20,7 +20,7 @@ QuantumGate cnot_gate ();
 QuantumGate controlled_gate (const QuantumGate &U); 
 QuantumGate toffoli_gate (); 
 QuantumGate fredkin_gate (); 
-QuantumGate function_gate (unsigned int (*f) (unsigned int), int m, int k); 
+QuantumGate function_gate (int (*f) (int), int m, int k); 
 QuantumGate grover_diffusion_operator (int n); 
 
 }

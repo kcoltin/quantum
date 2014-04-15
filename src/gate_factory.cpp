@@ -20,8 +20,8 @@ QuantumGate x_gate () {
 
 // Factory method for Pauli-Y gate 
 QuantumGate y_gate () {
-	static const complex<double> vals[] = {0., -1.i, 
-	                                       1.i, 0.}; 
+	static const complex<double> vals[] = {0.,      {0., -1.}, 
+	                                       {0, 1.}, 0.}; 
 	QuantumGate gate(1, vals); 
 	return gate; 
 }
@@ -45,7 +45,7 @@ QuantumGate hadamard_gate () {
 
 // Factory method for phase-shift gate
 QuantumGate phase_shift_gate (double theta) {
-	complex<double> thetai = theta*1.i; // Note 1
+	complex<double> thetai(0., theta); // Note 1 
 	complex<double> vals[] = {1., 0., 
 	                          0., exp(thetai)}; 
 	QuantumGate gate(1, vals); 
@@ -119,7 +119,7 @@ QuantumGate fredkin_gate () {
 // (+) represents bitwise addition mod 2 (equivalent to the XOR operation).  
 // It is easily shown that the map |x, y> --> |x, f(x) (+) y> is a bijection, 
 // which implies that Uf is a permutation matrix (and is therefore unitary).  
-QuantumGate function_gate (unsigned int (*f) (unsigned int), int m, int k) {
+QuantumGate function_gate (int (*f) (int), int m, int k) {
 	unsigned int n = m + k; // gate operates on an (m + k)-qubit system
 	complex<double> **matrix = czeros(pow(2, n), pow(2, n)); 
 	unsigned int x, y, i; 
@@ -132,7 +132,7 @@ QuantumGate function_gate (unsigned int (*f) (unsigned int), int m, int k) {
 		x = j >> k; // x is state ignoring the last k bits
 		
 		// Gate maps |x, y> to |x, y (+) f(x)>, where (+) is bitwise addition mod 2
-		i = (x << k) + (y ^ f(x)); 
+		i = (x << k) + (y ^ (unsigned int) f((int) x)); 
 		matrix[i][j] = 1.; 
 	}
 
