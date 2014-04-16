@@ -128,24 +128,9 @@ int * QubitSystem::ameasure () {
 	return astate;
 }
 
-// Performs the action of a quantum gate on a qubit system.  
-// The coefficients of the product are the result of the left matrix 
-// multiplication of GATE by QUBITS. 
-// It operators IN PLACE on the argument qubits, so the qubit system is changed
-// by operation of the gate. This setup, as opposed to returning a new system as
-// the product, a) is more realistic, and b) prevents cloning via multiplying a
-// qubit by the identity gate. 
+// Alternate notation for gate.act(qubits)
 void operator* (const QuantumGate &gate, QubitSystem &qubits){
-	// Throw error if the lengths differ
-	if (qubits.n != gate.n) {
-		throw length_error("Cannot operate on qubit system of different dimension");
-	}
-	// Throw error if matrix is not unitary
-	if (!is_unitary(gate.matrix, pow(2, gate.n))) {
-		throw runtime_error("Cannot perform non-unitary operation on a qubit");
-	}
-
-	prod_ip(gate.matrix, qubits.coeffs, pow(2, gate.n)); 
+	gate.act(&qubits); 
 } 
 
 
@@ -361,6 +346,40 @@ complex<double> QuantumGate::operator() (int i, int j) const {
 QuantumGate QuantumGate::H () const {
 	QuantumGate gate(this->n, conj_transpose(this->matrix, pow(2, this->n)));
 	return gate; 
+}
+
+
+// Overloaded/default version of act, applies to first n qubits where n is the
+// number of qubits that q acts on. 
+void QuantumGate::act (QubitSystem *q) const {
+	this->act(q, 1); 
+}
+
+
+// Performs the action of a quantum gate on a qubit system.  
+// The coefficients of the product are the result of the left matrix 
+// multiplication of the gate by the system q, starting with the qubit in 
+// position INDEX (where 1, not 0, is the first bit). E.g., if the gate G
+// operates on 2 qubits, then G.act(q, 2) would operate on the 2nd and 3rd
+// qubits of the system, e.g. on the 1 bits of a system in state |01100>. 
+// 
+// It operates IN PLACE on the argument q, so the qubit system is changed
+// by operation of the gate. This setup, as opposed to returning a new system as
+// the product, a) is more realistic, and b) prevents cloning via multiplying a
+// qubit by (for example) the identity gate. 
+void QuantumGate::act (QubitSystem *q, int index) const {
+	// TODO: for now, assumes index == 1 and q->n == this->n; change that
+
+	// Throw error if the lengths differ
+	if (q->N() != this->n) {
+		throw length_error("Cannot operate on qubit system of different dimension");
+	}
+	// Throw error if matrix is not unitary
+	if (!is_unitary(this->matrix, pow(2, this->n))) {
+		throw runtime_error("Cannot perform non-unitary operation on a qubit");
+	}
+
+	prod_ip(this->matrix, q->coeffs, pow(2, this->n)); 
 }
 
 
