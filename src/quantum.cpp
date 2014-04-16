@@ -368,18 +368,56 @@ void QuantumGate::act (QubitSystem *q) const {
 // the product, a) is more realistic, and b) prevents cloning via multiplying a
 // qubit by (for example) the identity gate. 
 void QuantumGate::act (QubitSystem *q, int index) const {
-	// TODO: for now, assumes index == 1 and q->n == this->n; change that
-
-	// Throw error if the lengths differ
-	if (q->N() != this->n) {
-		throw length_error("Cannot operate on qubit system of different dimension");
+	// Throw error if the dimensions don't fit
+	if (index <= 0 || index + this->n - 1 > q->N()) { 
+		throw invalid_argument("Dimension mismatch with gate and qubit system"); 
 	}
 	// Throw error if matrix is not unitary
 	if (!is_unitary(this->matrix, pow(2, this->n))) {
 		throw runtime_error("Cannot perform non-unitary operation on a qubit");
 	}
 
-	prod_ip(this->matrix, q->coeffs, pow(2, this->n)); 
+	complex<double> **mat, **tmp, **I; 
+
+	if (index == 1 && this->n == q->N()) { 
+		prod_ip(this->matrix, q->coeffs, pow(2, this->n)); 
+	}
+	else if (index > 1 && index + this->n - 1 == q->N()) { 
+		I = eyec(pow(2, index - 1), pow(2, index - 1)); 
+		mat = kron(I, this->matrix, pow(2, index - 1), pow(2, index - 1), 
+		           pow(2, this->n), pow(2, this->n)); 
+		prod_ip(mat, q->coeffs, pow(2, q->N())); 
+
+		deletem(mat, pow(2, q->N())); 
+		deletem(I, pow(2, index - 1)); 
+	}
+	else if (index == 1 && this->n < q->N()) { 
+		I = eyec(pow(2, q->N() - this->n), pow(2, q->N() - this->n)); 
+		mat = kron(this->matrix, I, pow(2, this->n), pow(2, this->n), 
+		           pow(2, q->N() - this->n), pow(2, q->N() - this->n)); 
+		prod_ip(mat, q->coeffs, pow(2, q->N())); 
+
+		deletem(mat, pow(2, q->N())); 
+		deletem(I, pow(2, q->N() - this->n)); 
+	}
+	else { // if (index > 1 && index + this->n - 1 < q->N())  
+		I = eyec(pow(2, index - 1), pow(2, index - 1)); 
+		tmp = kron(I, this->matrix, pow(2, index - 1), pow(2, index - 1), 
+		           pow(2, this->n), pow(2, this->n)); 
+
+		deletem(I, pow(2, q->N() - this->n)); 
+
+		I = eyec(pow(2, q->N() - (index + this->n - 1)), 
+		         pow(2, q->N() - (index + this->n - 1)));
+		mat = kron(tmp, I, pow(2, this->n + index - 1), pow(2, this->n + index - 1),
+		           pow(2, q->N() - (index + this->n - 1)), 
+		           pow(2, q->N() - (index + this->n - 1))); 
+		prod_ip(mat, q->coeffs, pow(2, q->N())); 
+
+		deletem(mat, pow(2, q->N())); 
+		deletem(tmp, pow(2, this->n + index - 1)); 
+		deletem(I, pow(2, q->N() - this->n)); 
+	}
 }
 
 
