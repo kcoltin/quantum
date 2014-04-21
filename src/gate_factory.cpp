@@ -5,6 +5,7 @@
 #include "gate_factory.h"
 #include "quantum.h"
 #include "util.h"
+#include <stdexcept>
 using std::complex; 
 
 namespace quantum_algorithm_simulator {
@@ -36,10 +37,16 @@ QuantumGate z_gate () {
 
 // Factory method for Hadamard ("square root of not") gate
 QuantumGate hadamard_gate () {
+	return hadamard_gate(1); 
+}
+
+
+// Hadamard gate repeated n times, to operate on n qubits. 
+QuantumGate hadamard_gate (int n) {
 	static const complex<double> vals[] = {1./sqrt(2), 1./sqrt(2), 
 	                                       1./sqrt(2), -1./sqrt(2)}; 
-	QuantumGate gate(1, vals); 
-	return gate; 
+	static const QuantumGate H(1, vals); 
+	return tensor_pow(H, n); 
 }
 
 

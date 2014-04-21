@@ -30,7 +30,7 @@ int grover_search (const string &match_text, const string *list, int n) {
 	if (n <= 0) throw std::invalid_argument("n must be positive");
 
 	const int N = ceil(log2(n)); // number of qubits needed
-	const QuantumGate Hn = tensor_pow(qgates::hadamard_gate(), N); 
+	const QuantumGate Hn = qgates::hadamard_gate(N);
 	const QuantumGate Ui = search_oracle(match_text, list, n);
 	const QuantumGate Ud = qgates::grover_diffusion_operator(N); 
 
@@ -64,7 +64,7 @@ int grover_search (const string &match_text, const string *list, int n) {
 int grover_invert (int (*f) (int), int y, int n) { 
 	if (n <= 0) throw std::invalid_argument("n must be positive");
 
-	const QuantumGate Hn = tensor_pow(qgates::hadamard_gate(), n); 
+	const QuantumGate Hn = qgates::hadamard_gate(n);
 	const QuantumGate Ui = function_oracle(f, y, n);
 	const QuantumGate Ud = qgates::grover_diffusion_operator(n); 
 

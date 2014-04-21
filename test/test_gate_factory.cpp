@@ -7,6 +7,9 @@ using std::complex;
 using std::string;
 using namespace quantum_algorithm_simulator; 
 
+// Tolerance for floating-point comparison
+static const double EPS = 1.e-6; 
+
 // Tests the factory method for producing a Pauli X-gate (aka "not" gate). This
 // is sufficient for testing all the "basic" factory methods since their 
 // internal workings are identical except for the values of the particular 
@@ -30,6 +33,30 @@ TEST (GateFactoryTest, TestXGate) {
 	state = q.ameasure(); 
 	EXPECT_EQ(0, state[0]); // the state should be |0>
 	delete [] state; 
+}
+
+
+// Test Hadamard gate
+TEST (GateFactoryTest, TestHadamardGate) {
+	static const int N = 3; 
+	// Matrix with 1's for all positive entries of three-qubit Hadamard gate
+	static const int is_pos[] = {1, 1, 1, 1, 1, 1, 1, 1, 
+	                             1, 0, 1, 0, 1, 0, 1, 0,
+	                             1, 1, 0, 0, 1, 1, 0, 0,
+	                             1, 0, 0, 1, 1, 0, 0, 1, 
+	                             1, 1, 1, 1, 0, 0, 0, 0, 
+	                             1, 0, 1, 0, 0, 1, 0, 1, 
+	                             1, 1, 0, 0, 0, 0, 1, 1, 
+	                             1, 0, 0, 1, 0, 1, 1, 0}; 
+	const QuantumGate H = qgates::hadamard_gate(N); 
+	const double ENTRY_VAL = pow(2., - N / 2.); // abs val of each entry 
+	int sign; 
+	for (int i = 0; i < pow(2, N); i++) { 
+		for (int j = 0; j < pow(2, N); j++) { 
+			sign = is_pos[(int) (i * pow(2, N) + j)] == 1 ? 1. : -1.;   
+			EXPECT_LT(abs(H(i,j) - sign * ENTRY_VAL), EPS); 
+		}
+	}
 }
 
 

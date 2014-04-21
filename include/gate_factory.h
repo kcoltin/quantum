@@ -14,6 +14,7 @@ QuantumGate x_gate ();
 QuantumGate y_gate (); 
 QuantumGate z_gate (); 
 QuantumGate hadamard_gate (); 
+QuantumGate hadamard_gate (int n); 
 QuantumGate phase_shift_gate (double theta); 
 QuantumGate swap_gate ();
 QuantumGate cnot_gate (); 
