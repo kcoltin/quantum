@@ -405,7 +405,7 @@ void QuantumGate::act (QubitSystem *q, int index) const {
 		tmp = kron(I, this->matrix, pow(2, index - 1), pow(2, index - 1), 
 		           pow(2, this->n), pow(2, this->n)); 
 
-		deletem(I, pow(2, q->N() - this->n)); 
+		deletem(I, pow(2, index - 1)); 
 
 		I = eyec(pow(2, q->N() - (index + this->n - 1)), 
 		         pow(2, q->N() - (index + this->n - 1)));
@@ -416,7 +416,7 @@ void QuantumGate::act (QubitSystem *q, int index) const {
 
 		deletem(mat, pow(2, q->N())); 
 		deletem(tmp, pow(2, this->n + index - 1)); 
-		deletem(I, pow(2, q->N() - this->n)); 
+		deletem(I, pow(2, q->N() - (index + this->n - 1))); 
 	}
 }
 

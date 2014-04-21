@@ -12,8 +12,8 @@ using namespace quantum_algorithm_simulator;
 static const double EPS = 1.e-6; 
 
 // Tests the action of multiplying a quantum gate by a qubit system. 
-TEST (QuantumGateTest, TestProduct) {
-	static const int N = 2; 
+TEST (QuantumGateTest, TestAct) {
+	int N = 2; 
 	QubitSystem q1(N);
 	QubitSystem q2(N, 2);
 	const QuantumGate SWAP = qgates::swap_gate(); 
@@ -38,6 +38,20 @@ TEST (QuantumGateTest, TestProduct) {
 	EXPECT_EQ("11", q2.smeasure());
 	CNOT * q2; 
 	EXPECT_EQ("10", q2.smeasure()); 
+
+	// Test applying a gate to a subset of the qubits in the system
+	N = 4; 
+	QubitSystem q(N); // state 0000
+	const QuantumGate X = qgates::x_gate(); 
+
+	X.act(&q, 3); 
+	EXPECT_EQ("0010", q.smeasure()); 
+	X.act(&q, 4); 
+	EXPECT_EQ("0011", q.smeasure()); 
+	SWAP.act(&q, 2);  
+	EXPECT_EQ("0101", q.smeasure()); 
+	SWAP * q; 
+	EXPECT_EQ("1001", q.smeasure()); 
 }
 
 
