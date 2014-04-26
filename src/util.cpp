@@ -5,6 +5,7 @@
 #include <sys/time.h>
 using std::complex; 
 using std::string;
+using std::invalid_argument; 
 
 const double PI = 4. * atan(1.); 
 
@@ -302,7 +303,7 @@ complex<double> ** kron (complex<double> **A, complex<double> **B, int m, int n,
 // Raises an n x n matrix to the power e, where e is a nonnegative integer. 
 // Uses the naive method of repeated multiplication. 
 complex<double> ** mpow (complex<double> **A, int e, int n) { 
-	if (e < 0) throw std::invalid_argument("Exponent must be nonnegative"); 
+	if (e < 0) throw invalid_argument("Exponent must be nonnegative"); 
 
 	complex<double> **X = eyec(n, n); 
 	
@@ -318,7 +319,7 @@ complex<double> ** mpow (complex<double> **A, int e, int n) {
 // Uses the naive method of repeated multiplication. 
 // Edits the matrix A in place. 
 void mpow_ip (complex<double> **A, int e, int n) { 
-	if (e < 0) throw std::invalid_argument("Exponent must be nonnegative"); 
+	if (e < 0) throw invalid_argument("Exponent must be nonnegative"); 
 
 	complex<double> **tmp = copym(A, n); 
 	for (int i = 0; i < n; i++) { 
@@ -357,6 +358,24 @@ bool is_unitary (complex<double> **U, int n) {
 }
 
 
+// Returns the greatest common factor of a and b using the Euclidean algorithm.
+int gcf (int a, int b) {
+	if (a <= 0 || b <= 0) 
+		throw invalid_argument ("arguments must be positive integers");
+
+	int tmp;
+
+	while (b != 0) {
+		tmp = b;
+		b = a % b;
+		a = tmp;
+	}
+
+	return a;
+}
+
+
+
 // Uniform random number generator. Returns a random number uniformly 
 // distributed on [0, 1). 
 double runif () {
@@ -374,13 +393,13 @@ double runif () {
 // Discrete uniform random number generator. Returns an integer uniformly 
 // distributed between a and b, inclusive. 
 int rdunif (int a, int b) {
-	if (a > b) throw std::invalid_argument("a must be less than or equal to b");
+	if (a > b) throw invalid_argument("a must be less than or equal to b");
 	return (int) floor(a + runif() * (b - a + 1));
 }
 
 
 // Seeds the runif() function with a pseudo-random starting point, and 
-// initializes a random number generator.  
+// initializes a random number generator. 
 // This function is automatically called by runif the first time that runif is
 // called in a program, so it never needs to be called by the user. 
 static gsl_rng * init_runif () {
@@ -420,7 +439,7 @@ int bin_to_int (string bin) {
 			n += 1 << i; // equals 2^i
 		} 
 		else if (bit != '0') {
-			throw std::invalid_argument("Argument must be string of 0s and 1s only");
+			throw invalid_argument("Argument must be string of 0s and 1s only");
 		}
 	}
 
@@ -431,7 +450,7 @@ int bin_to_int (string bin) {
 // len is the length of the string to return. 
 // Example: int_to_bin(5, 4) = "0101". 
 string int_to_bin (int n, int len) {
-	if (n >= pow(2, len)) throw std::invalid_argument("len is too small");
+	if (n >= pow(2, len)) throw invalid_argument("len is too small");
 
 	string str; 
 	for (int i = 0; i < len; i++) { 

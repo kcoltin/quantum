@@ -47,6 +47,7 @@ void mpow_ip (std::complex<double> **A, int e, int n);
 
 bool is_unitary (std::complex<double> **U, int n);
 
+int gcf (int a, int b); 
 double runif ();
 int rdunif (int a, int b);
 
