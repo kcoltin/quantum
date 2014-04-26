@@ -6,8 +6,10 @@
 #include "quantum.h"
 #include "util.h"
 #include <cmath>
+#include <complex>
 #include <stdexcept>
 using std::string;
+using std::complex; 
 
 namespace quantum_algorithm_simulator {
 
@@ -15,6 +17,27 @@ static QuantumGate search_oracle (const string &match_text, const string *list,
                                   int n);
 static QuantumGate function_oracle (int (*f) (int), int y, int n);  
 static int r (int n); 
+
+
+// Performs the quantum Fourier transform on a system of qubits.
+void qft (QubitSystem *q) {
+	// Make quantum gate F, the discrete Fourier transform matrix of dimension 
+	// 2^n, with a unitary normalization constant of 1/sqrt(N). 
+	const int N = pow(2, q->N());
+	const complex<double> TWOPIIN(0., 2. * PI / N); // Note 1
+	const complex<double> omega = exp(TWOPIIN); 
+	complex<double> **matrix = new_cmat(N, N); 
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			matrix[i][j] = pow(omega, i * j) / sqrt(N);
+		}
+	}
+	QuantumGate F(N, matrix, true); 
+
+	// Apply F to q
+	F * (*q);
+}
 
 
 // Grover's quantum algorithm for searching. 
@@ -135,4 +158,7 @@ static int r (int n) {
 } // end namespace 
 
 
+// NOTES
+// 1. This constant must be computed outside of the function exp(), to avoid 
+// dumb errors with the complex exponential function. 
 

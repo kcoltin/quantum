@@ -52,9 +52,9 @@ QuantumGate hadamard_gate (int n) {
 
 // Factory method for phase-shift gate
 QuantumGate phase_shift_gate (double theta) {
-	complex<double> thetai(0., theta); // Note 1 
+	const complex<double> THETAI(0., theta); // Note 1 
 	complex<double> vals[] = {1., 0., 
-	                          0., exp(thetai)}; 
+	                          0., exp(THETAI)}; 
 	QuantumGate gate(1, vals); 
 	return gate; 
 }
