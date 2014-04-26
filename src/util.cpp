@@ -375,6 +375,27 @@ int gcf (int a, int b) {
 }
 
 
+// Checks whether n is the k-th power of an integer for some k. If so, it 
+// returns the root r such that r^k = n. Otherwise, it returns -1.
+int int_root (int n) {
+	if (n <= 0) throw invalid_argument("n must be positive");
+
+	int k = 2;
+	double root;
+	int iroot;
+
+	while (k <= log2(n)) {
+		root = pow(n, 1. / k);
+		iroot = round(root);
+		if (round(pow(iroot, k)) == n) {
+			return iroot;
+		}
+		k++;
+	}
+
+	return -1;
+}
+
 
 // Uniform random number generator. Returns a random number uniformly 
 // distributed on [0, 1). 
