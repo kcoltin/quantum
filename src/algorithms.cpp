@@ -58,7 +58,7 @@ int grover_search (const string &match_text, const string *list, int n) {
 	const QuantumGate Ud = qgates::grover_diffusion_operator(N); 
 
 	int index; 
-	static const int MAX_ITER = 20; 
+	static const int MAX_ITER = 50; 
 	int count = 0; 
 	// Repeat until a solution is found or the iteration limit is reached
 	do {
@@ -92,7 +92,7 @@ int grover_invert (int (*f) (int), int y, int n) {
 	const QuantumGate Ud = qgates::grover_diffusion_operator(n); 
 
 	int x; 
-	static const int MAX_ITER = 20; 
+	static const int MAX_ITER = 50; 
 	int count = 0; 
 	// Repeat until a solution is found or the iteration limit is reached
 	do {
