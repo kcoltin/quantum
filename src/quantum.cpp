@@ -256,6 +256,7 @@ int QubitSystem::get_observed_state () {
 // Default constructor for a quantum gate operating on n qubits. Initialized to
 // the identity matrix. 
 QuantumGate::QuantumGate (int n) {
+	if (n <= 0) throw invalid_argument("n must be positive"); 
 	this->n = n; 
 	this->matrix = eyec(pow(2, n), pow(2, n)); 
 }
@@ -265,6 +266,7 @@ QuantumGate::QuantumGate (int n) {
 // unitary matrix describing the action of the gate is given. Assigns the matrix
 // by reference. 
 QuantumGate::QuantumGate (int n, complex<double> **matrix) {
+	if (n <= 0) throw invalid_argument("n must be positive"); 
 	this->n = n; 
 	this->matrix = matrix; 
 }
@@ -274,6 +276,7 @@ QuantumGate::QuantumGate (int n, complex<double> **matrix) {
 // false, it assigns the given matrix by reference rather than copying its 
 // entries by value. 
 QuantumGate::QuantumGate (int n, complex<double> **matrix, bool byref) {
+	if (n <= 0) throw invalid_argument("n must be positive"); 
 	this->n = n; 
 	this->matrix = byref ? matrix : copym(matrix, pow(2, n), pow(2, n)); 
 } 
@@ -283,6 +286,7 @@ QuantumGate::QuantumGate (int n, complex<double> **matrix, bool byref) {
 // unitary matrix describing the action of the gate is given by a vector of
 // values in row-major order.  
 QuantumGate::QuantumGate (int n, const complex<double> *vector) {
+	if (n <= 0) throw invalid_argument("n must be positive"); 
 	this->n = n; 
 	this->matrix = vec_to_mat(vector, pow(2, n), pow(2, n));
 }
