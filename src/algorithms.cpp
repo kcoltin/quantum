@@ -36,7 +36,7 @@ void qft (QubitSystem *q) {
 	QuantumGate F(N, matrix, true); 
 
 	// Apply F to q
-	F * (*q);
+	F * q;
 }
 
 

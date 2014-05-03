@@ -44,6 +44,7 @@ is always equivalent to calling \\
 \item \verb~QubitSystem (int n, int state)~: Creates a system containing \verb~n~ qubits in the pure state representing the integer \verb~state~ in binary digits. For example, calling \verb~QubitSystem q(3, 2)~ would initialize a system in the state $|010\rangle$. 
 \item \verb~QubitSystem (int n, const std::string state)~: Creates a system containing \verb~n~ qubits in the pure state represented by the binary string \verb~state~. For example, calling \verb~QubitSystem q(4, "1100")~ would initialize a system in the state $|1100\rangle$. 
 \end{itemize}
+Note that the copy constructor and copy assignment operator for the class are not public methods: this prevents violations of the no-cloning theorem, which states that it is impossible to copy the state of an arbitrary system of qubits. 
 
 The other public methods of the class are: 
 \begin{itemize}
@@ -63,6 +64,67 @@ For example, suppose that \verb~q~ is a \verb~QubitSystem~ with \verb~q.n~$ = 2$
 
 
 \section{The \texttt{QuantumGate} class}
+
+An object of the class \verb~QuantumGate~ represents a single quantum gate that operates on a system of one or more qubits. 
+
+A gate is represented by a unitary matrix $M$ such that performing the action of the gate to a system of qubits is equivalent to left multiplying the vector of coefficients on the basis states of the system by $M$. Suppose for example that $q$ is a system of two qubits in the state $a|00\rangle + b|01\rangle + c|10\rangle + d|11\rangle)$, and $G$ is a gate with matrix
+\[M = \left(\begin{array}{cccc} 
+1 & 0 & 0 & 0 \\
+0 & 0 & 1 & 0 \\ 
+0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 1 
+\end{array}\right) \] 
+(the swap gate). When $G$ acts on $q$, the coefficient vector $(a, b, c, d)$ is multiplied by $M$, which changes the state of $q$ to be $a|00\rangle + c|01\rangle + b|10\rangle + d|11\rangle$. 
+
+Objects of the class \verb~QuantumGate~ have the following data members: 
+\begin{itemize} 
+\item \verb~n~: Positive integer representing the number of qubits that the gate operates on. For instance, the swap gate in the example above operates on two qubits. 
+
+\item \verb~matrix~: A two-dimensional array of complex numbers representing the coefficients of the unitary matrix that represents the action of the quantum gate. The dimensions of the matrix are always $2^n \times 2^n$, since a gate operating on a system of $n$ qubits must operate on a vector of amplitudes of $2^n$ possible basis states. 
+
+\end{itemize} 
+
+The \verb~QuantumGate~ class includes the following constructors: 
+\begin{itemize}
+\item \verb~QuantumGate (int n)~: Default constructor for a quantum gate operating on \verb~n~ qubits. The gate is initialized to the identity gate---that is, the gate represented by the $2^n \times 2^n$ identity matrix, whose application has no effect on a qubit system. 
+
+\item \verb~QuantumGate (int n, std::complex<double> **matrix, bool byref)~: Creates a gate operating on \verb~n~ qubits defined by the given matrix. The second argument must be a two-dimensional array of size $2^n \times 2^n$. If the optional argument \verb~byref~ is omitted or is \verb~true~, then the member \verb~this->matrix~ is assigned by reference to equal the argument \verb~matrix~. If \verb~byref~ is \verb~true~, then \verb~this->matrix~ is a copy of the argument \verb~matrix~. 
+
+\item \verb~QuantumGate (int n, const complex<double *vector)~: Creates a gate operating on \verb~n~ qubits, defined by the matrix whose coefficients are given by the argument \verb~vector~ in row-major order. \verb~vector~ must be a complex array of length $2^{2n}$.
+
+\end{itemize} 
+The class also implements a copy constructor and copy assignment operator that work in the usual way, i.e. by creating a new \verb~QuantumGate~ whose fields \verb~n~ and \verb~matrix~ are equal (by value, not reference) to those of the original gate. 
+
+The class also contains the following public methods and friend functions: 
+\begin{itemize} 
+\item \verb~int N ()~: Returns the value of the private member variable \verb~n~, the number of qubits that the gate acts on.
+
+\item \verb~void set (int i, int j, std::complex<double> val)~ and \\
+\verb~std::complex<double> operator() (int i, int j)~: Respectively, setter and getter methods for the (\verb~i,j~)th entry of \verb~matrix~. 
+
+\item \verb~QuantumGate H ()~: Returns the quantum gate defined by the conjugate transpose of the current gate's matrix. Analogous to taking the conjugate transpose of the member variable \verb~matrix~. 
+
+\item \verb~void act (QubitSystem *q, int index)~ and the operator \verb~*~: The method \verb~act~ applies the action of the quantum gate on a (proper or improper) subset of the given system of qubits. Specifically, if \verb~q~ is a system of $n$ qubits and the gate operates on $m$ qubits (where $m \le n$ of necessity), then the action of the gate is applied to the \verb~index~th through (\verb~index~$ + m - 1$)th qubits in the system. If the optional argument \verb~index~ is omitted, it is set to 1.
+
+The operator \verb~*~ is shorthand for calling \verb~act~ with one argument, that is: \\ 
+\hspace*{1em} \verb~G * q;~ \\ 
+is equivalent to \\
+\hspace*{1em} \verb~G.act(&q);~. \\ 
+The \verb~*~ operator is to be preferred whenever the second argument is unnecessary as it is closer to the mathematical notation. 
+
+For example, let \verb~G~ be the swap gate as defined above, and let \verb~q~ be a system of qubits in the state 
+\[ a|000\rangle + b|001\rangle + c|010\rangle + d|011\rangle + e|100\rangle + f|101\rangle + g|110\rangle + h|111\rangle .\] 
+Then, taking 
+\hspace*{1em} \verb~G.act(&q);~
+or
+\hspace*{1em} \verb~G * (&q);~
+
+Note: The method \verb~act~ (and hence the \verb~*~ operator) always checks that the gate's matrix is unitary before applying it to a system of qubits. If the programmer creates a gate that is not unitary, an exception will be thrown whenever the gate is used. 
+
+\item Various linear-algebra operations on quantum gates: The operators \verb~+~, \verb~-~, \verb~*~, and \verb~%~ are respectively used to add, subtract, multiply using standard matrix multiplication, and multiply using the tensor product two quantum gates. The operator \verb~^~ raises a gate's matrix to an integer power, and the function \verb~QuantumGate tensor_pow (const QuantumGate &g, int e)~ returns the tensor product of a gate \verb~g~ tensored with itself \verb~e~ times. 
+
+\end{itemize} 
+
 
 \section{The file \texttt{gate\textunderscore{}factory.cpp}} 
 

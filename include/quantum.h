@@ -36,8 +36,8 @@ class QuantumGate {
 	QuantumGate & operator^= (int e); 
 	QuantumGate & operator%= (const QuantumGate &other); 
 
-	friend QuantumGate operator+ (const QuantumGate &g1, const QuantumGate &g2); 
 	friend void operator* (const QuantumGate &gate, QubitSystem &qubits);  
+	friend QuantumGate operator+ (const QuantumGate &g1, const QuantumGate &g2); 
 	friend QuantumGate operator* (const QuantumGate &g1, const QuantumGate &g2); 
 	friend QuantumGate operator^ (const QuantumGate &g1, int e); 
 	friend QuantumGate operator% (const QuantumGate &g1, const QuantumGate &g2); 
