@@ -110,14 +110,20 @@ The operator \verb~*~ is shorthand for calling \verb~act~ with one argument, tha
 \hspace*{1em} \verb~G * q;~ \\ 
 is equivalent to \\
 \hspace*{1em} \verb~G.act(&q);~. \\ 
-The \verb~*~ operator is to be preferred whenever the second argument is unnecessary as it is closer to the mathematical notation. 
+Note that the \verb~*~ operator takes an address \verb~QubitSystem&~ whereas the \verb~act~ method takes a reference \verb~QubitSystem*~. The \verb~*~ operator is to be preferred whenever the second argument is unnecessary as it is closer to the mathematical notation.  
 
 For example, let \verb~G~ be the swap gate as defined above, and let \verb~q~ be a system of qubits in the state 
 \[ a|000\rangle + b|001\rangle + c|010\rangle + d|011\rangle + e|100\rangle + f|101\rangle + g|110\rangle + h|111\rangle .\] 
-Then, taking 
-\hspace*{1em} \verb~G.act(&q);~
-or
-\hspace*{1em} \verb~G * (&q);~
+Then, taking \\
+\hspace*{1em} \verb~G.act(&q);~\\
+or\\
+\hspace*{1em} \verb~G * q;~\\
+would put the system into the state
+\[ a|000\rangle + b|001\rangle + e|010\rangle + f|011\rangle + c|100\rangle + d|101\rangle + g|110\rangle + h|111\rangle, \] 
+while taking \\
+\hspace*{1em} \verb~G.act(&q, 2);~\\
+instead would put the system into the state
+\[ a|000\rangle + c|001\rangle + b|010\rangle + d|011\rangle + e|100\rangle + g|101\rangle + f|110\rangle + h|111\rangle .\] 
 
 Note: The method \verb~act~ (and hence the \verb~*~ operator) always checks that the gate's matrix is unitary before applying it to a system of qubits. If the programmer creates a gate that is not unitary, an exception will be thrown whenever the gate is used. 
 
