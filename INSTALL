@@ -1,0 +1,16 @@
+Installation instructions
+
+Scripts are provided for installing QAS using CMake. To install: 
+1. Edit any of the CMakeLists.txt files (located in the main directory, lib/, 
+   and test/) as necessary. 
+2. Navigate to the build/ directory. 
+3. Configure and auto-generate a Makefile by typing:
+   $ cmake ..
+
+4. Generate the library and test executable by typing:
+   $ make
+
+5. Optionally, run the test suite by navigating to the test/ directory and
+   typing:
+   $ ./run_tests
+

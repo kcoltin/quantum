@@ -1,0 +1,106 @@
+\documentclass{article} 
+
+\usepackage{amsmath, amssymb} 
+
+\newcommand{\cpp}{C{}\verb~++~}
+
+\title{Quantum Algorithm Simulator (QAS)}
+\author{Kevin Coltin} 
+\date{April 2014} 
+
+\begin{document} 
+
+\maketitle 
+
+\tableofcontents
+
+\section{Introduction} 
+
+QAS is a library of functions and classes for simulating the action of a quantum computer using \cpp. It contains two classes---\verb~QubitSystem~ and \verb~QuantumGate~---that simulate the two primary structures used in quantum computing, quantum bits (qubits) and gates that operate on systems of one or more qubits. 
+
+Encapsulation is used to enforce the limitations that make programming for a quantum computer fundamentally different than for a classical computer. The operations that can be performed on an object of the class \verb~QubitSystem~, which represents a system of one or more possibly entangled qubits, are essentially limited to applying the action of a unitary quantum gate on the system and ``observing'' the system, which collapses it to a pure state. This allows the user to design, implement, and test algorithms in a natural way under the constraints inherent to quantum computing. 
+
+The QAS library has an extremely compact and intuitive interface, making it easy to learn and use for anyone familiar with \cpp. It fits easily within a larger \cpp program, so that mixing classical and quantum programming is effortless. For examples of use, see the unit tests in the \verb~test~ directory. 
+
+
+\section{The \texttt{QubitSystem} class}
+
+An object of the \verb~QubitSystem~ class represents a system of one or more qubits. Representing multiple qubits in a single object---rather than the more obvious object-oriented approach of having each instance of the class be a single qubit---makes it possible to realistically model the phenomenon of entanglement, wherein performing operations or measurements on one or more qubits may affect arbitrarily many other qubits. 
+
+The data members of a \verb~QubitSystem~ object are as follows: 
+\begin{itemize}
+\item \verb~n~: Nonnegative integer representing the number of qubits in the system. 
+\item \verb~coeffs~: Array of complex numbers representing the coefficients on each basis state of the system. Since a system of $n$ qubits has $2^n$ possible basis states, the length of \verb~coeffs~ is always $2^n$. The $k$th entry, \verb~coeffs[k]~, represents the complex coefficient (the amplitude) on the basis state whose individual qubit values form the binary integer $k$ represented by \verb~n~ binary digits. For example, if \verb~n~ $= 4$, then \verb~coeffs[0]~ would be the coefficient on the basis state $|0000\rangle$, \verb~coeffs[13]~ would be the coefficient on the basis state $|1101\rangle$, and so on. The sum of the squares of the amplitudes is restricted to always equal one. 
+\end{itemize}
+
+The following constructors exist for the \verb~QubitSystem~ class. The class also has a corresponding \verb~init~ method for each constructor, so calling \\
+\hspace*{1em} \verb~QubitSystem q;~ \\
+\hspace*{1em} \verb~q.init(~\emph{args}\verb~);~ \\
+is always equivalent to calling \\
+\hspace*{1em} \verb~QubitSystem q(~\emph{args}\verb~);~ 
+\begin{itemize}
+\item \verb~QubitSystem ()~: Default constructor. Creates a system containing a single qubit in the state $|0\rangle$. 
+\item \verb~QubitSystem (int n)~: Creates a system containing \verb~n~ qubits in the state $|00...0\rangle$. 
+\item \verb~QubitSystem (int n, int state)~: Creates a system containing \verb~n~ qubits in the pure state representing the integer \verb~state~ in binary digits. For example, calling \verb~QubitSystem q(3, 2)~ would initialize a system in the state $|010\rangle$. 
+\item \verb~QubitSystem (int n, const std::string state)~: Creates a system containing \verb~n~ qubits in the pure state represented by the binary string \verb~state~. For example, calling \verb~QubitSystem q(4, "1100")~ would initialize a system in the state $|1100\rangle$. 
+\end{itemize}
+
+The other public methods of the class are: 
+\begin{itemize}
+\item \verb~int N ()~: Returns the value of the private member variable \verb~n~, the number of qubits in the system. 
+\item \verb~int measure ()~: Performs a measurement on the system of qubits. This collapses the system to a pure state, where the amplitudes (represented by the array \verb~coeffs~) are zero on all states except the observed state. The $k$th state (i.e., the state whose qubits form the binary digits of the integer $k$) is observed with probability given by $|$\verb~coeffs[k]~$|^2$. 
+
+For example, suppose that \verb~q~ is a \verb~QubitSystem~ with \verb~q.n~$ = 2$ and \verb~q.coeffs~$ = \{1/\sqrt{2}, 0, 0.5 + 0.5i, 0\}$, i.e. a system of two qubits in the mixed state $1/\sqrt{2}|00\rangle + (0.5+0.5i)|10\rangle$. Then, calling \verb~q.measure()~ would return the integers 0 or 2 each with 50\% probability. 
+
+\item \verb~int measure (int bit_index)~: Performs a measurement on a single qubit in the system, the \verb~bit_index~th qubit in order from left to right, starting with one. E.g., if the system \verb~q~ is in the pure state $|0110\rangle$, then \verb~q.measure(1)~ or \verb~q.measure(4)~ will return 0, and \verb~q.measure(2)~ or \verb~q.measure(3)~ will return 1. 
+
+\item \verb~std::string smeasure ()~: Like calling \verb~measure()~, but returns the state as a string of binary digits rather than an integer. E.g., calling \verb~q.smeasure()~ when \verb~q~ is in the pure state $|010\rangle$ will return the string \verb~"010"~. 
+
+\item \verb~int * ameasure ()~: Like calling \verb~measure()~, but returns the state as an array of binary digits rather than an integer. E.g., calling \verb~q.smeasure()~ when \verb~q~ is in the pure state $|010\rangle$ will return the array \verb~{0, 1, 0}~. 
+
+\end{itemize} 
+
+
+
+\section{The \texttt{QuantumGate} class}
+
+\section{The file \texttt{gate\textunderscore{}factory.cpp}} 
+
+The file \verb~gate_factory.cpp~ contains factory functions for creating various types of commonly used quantum gates, such as the Pauli-X gate (also known as the quantum NOT gate), swap gate, and Toffoli gate. Each function in the file is explained by a brief comment preceding it. 
+
+
+\section{Quantum algorithms} 
+
+The following algorithms are included in the QAS system: 
+\begin{itemize} 
+\item \verb~void qft (QubitSystem *q)~: Performs the quanum Fourier transform on a system of qubits. This is equivalent to performing the discrete Fourier transform in-place on the vector of amplitudes \verb~q->coeffs~. 
+
+\item \verb~int grover_search (const std::string &match_text,~ \\
+\verb~const std::string *list, int n)~: Uses Grover's search algorithm to search the array of strings \verb~list~ for the string \verb~match_text~. It returns the index \verb~k~ such that the string \verb~list[k]~ is the same as \verb~match_text~. If two or more such values \verb~k~ exist, it may return any one of them. If no element of \verb~list~ matches \verb~match_text~, returns $-1$. 
+
+\item \verb~int grover_invert (int (*f) (int), int y, int n)~: Uses Grover's algorithm to invert a function. The function \verb~f~ must map a sequence of \verb~n~ bits (which can be thought of as the binary representation of an integer between 0 and $2^n - 1$ inclusive) to another sequence of bits of any positive length (which can again be thought of as a binary integer). Calling \verb~grover_invert(f, y, n)~ returns the integer $x \in \{0, 1, \dots, 2^n-1\}$ such that $f(x) = y$. If two or more such values $x$ exist, it may return any one of them. If no such $x$ exists, it returns $-1$. 
+
+\end{itemize} 
+
+
+
+\end{document} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
