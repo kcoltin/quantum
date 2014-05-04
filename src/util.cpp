@@ -359,7 +359,7 @@ bool is_unitary (complex<double> **U, int n) {
 
 
 // Returns the greatest common factor of a and b using the Euclidean algorithm.
-int gcf (int a, int b) {
+int gcd (int a, int b) {
 	if (a <= 0 || b <= 0) 
 		throw invalid_argument ("arguments must be positive integers");
 
@@ -376,17 +376,46 @@ int gcf (int a, int b) {
 
 
 // Tests whether n is prime, using the AKS primality test.
+// See: 
+// http://en.wikipedia.org/wiki/AKS_primality_test
+// http://www.dm.unito.it/~cerruti/ac/aks-crandall.pdf
 bool is_prime (int n) {
 	if (n <= 1) throw invalid_argument("n must be greater than 1");
- 
-//	http://www.dm.unito.it/~cerruti/ac/aks-crandall.pdf
-// TODO: finish, test
+	// First, check that n is not the power of an integer
+	int root = int_root(n); 
+	if (root != -1) {
+		return false; 
+	}
 
+	// TEMPORARY NAIVE IMPLEMENTATION, to be replaced later
+	for (int k = 2; k < floor(sqrt(n)); k++) { 
+		if (n % k == 0) { 
+			return false; 
+		}
+	}
+	return true; 
 
+	// Find the smallest r such that O_r(n) (the multiplicative order of n modulo
+	// r) > log2^2 n 
+	// TODO 
+
+	// if 1 < gcd(a,n) < n for some a <= r, n is composite. 
+	// TODO
+
+//	// If n <= r, n is prime
+//	if (n <= r) {
+//		return true; 
+// 	}
+//
+//	for (int a = 1; a <= floor(sqrt(totient(r)) * log2(n)); a++) { 
+//		// TODO 
+//	}
+//	
+//	return true; 
 }
 
 
-// Checks whether n is the k-th power of an integer for some k. If so, it 
+// Checks whether n is the k-th power of an integer for some k > 1. If so, it 
 // returns the root r such that r^k = n. Otherwise, it returns -1.
 int int_root (int n) {
 	if (n <= 0) throw invalid_argument("n must be positive");

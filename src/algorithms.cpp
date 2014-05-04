@@ -39,7 +39,7 @@ void qft (QubitSystem *q) {
 	QuantumGate F(N, matrix, true); 
 
 	// Apply F to q
-	F * q;
+	F.act(q);
 }
 
 
@@ -123,9 +123,7 @@ int shor_factor (int n) {
 	if (n <= 1) throw runtime_error("n must be at least 2"); 
 	if (is_prime(n)) return 1; 
 	if (n % 2 == 0) return 2; // even numbers > 2 are trivial
-
-	// Need to check that n is not the power of an integer for the algorithm to
-	// work
+	// Need to check that n is not the power of an integer for algorithm to work
 	int root = int_root(n); 
 	if (root != -1) return root; 
 
@@ -136,13 +134,14 @@ int shor_factor (int n) {
 	const int ny = ceil(log2(n - 1)); // number of qubits in output of function f
 	const QuantumGate I(ny); 
 	const QuantumGate H = qgates::hadamard_gate(m) % I; 
-	QubitSystem q; 
 
+	QubitSystem q; 
+	int a, r; 
 	const int MAX_ITER = 10; 
 	int niter = 0; 
 
 	do {
-		int a = n - 1; // arbitrary integer coprime to n
+		a = n - 1; // arbitrary integer coprime to n
 
 		// Initialize a system of qubits long enough to represent the integers 0 to
 		// 2^m - 1 alongside an integer up to n - 1, then apply Hadamard gate to the
@@ -157,12 +156,12 @@ int shor_factor (int n) {
 
 		// Find the period of f via quantum Fourier transform
 		qft(&q); 
-		// TODO: finish
+		r = 1. / q.measure(); // period = 1 / frequency
 
 		niter++; 
-	} while (niter < MAX_ITER && (r % 2 != 0 || pow(a, r / 2) % n == -1)); 
+	} while (niter < MAX_ITER && (r % 2 != 0 || ((int) pow(a, r / 2)) % n == -1));
 
-	return gcf(pow(a, r / 2) + 1, n); 
+	return gcd(pow(a, r / 2) + 1, n); 
 }
 
 
@@ -214,7 +213,7 @@ static int r (int n) {
 // Performs modular exponentiation. Given integers b, e, and n, returns 
 // y = b^e (mod n).
 static int modexp (int b, int e, int n) {
-	// TODO: make
+	return (int) pow(b, e) % n; 
 }
 
 

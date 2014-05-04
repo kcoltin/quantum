@@ -52,3 +52,33 @@ TEST (AlgorithmsTest, TestGroverInversion) {
 	EXPECT_EQ(-1, x); 
 }
 
+
+// Test Shor's algorithm
+TEST (AlgorithmsTest, TestShor) {
+	int composites[] = {4, 6, 10, 21, 35, 144}; // numbers to factor
+	const int LENGTH = 6; 
+
+	for (int i = 0; i < LENGTH; i++) {
+		int n = composites[i]; 
+		int p = shor_factor(n); 
+		// test that p is a factor
+		EXPECT_EQ(0, n % p); 
+		// test that p is not trivial
+		EXPECT_NE(1, p); 
+		EXPECT_NE(n, p); 
+	}
+
+	// Test that it returns 1 for prime numbers
+	int primes[] = {2, 3, 7, 29}; 
+	const int PRIMES_LENGTH = 4; 
+	for (int i = 0; i < PRIMES_LENGTH; i++) { 
+		int p = primes[i]; 
+		EXPECT_EQ(1, shor_factor(p)); 
+	}
+}
+
+
+
+
+
+
