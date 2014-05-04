@@ -7,9 +7,11 @@
 #include "util.h"
 #include <cmath>
 #include <complex>
+#include <functional>
 #include <stdexcept>
 using std::string;
 using std::complex; 
+using std::runtime_error; 
 
 namespace quantum_algorithm_simulator {
 
@@ -17,6 +19,7 @@ static QuantumGate search_oracle (const string &match_text, const string *list,
                                   int n);
 static QuantumGate function_oracle (int (*f) (int), int y, int n);  
 static int r (int n); 
+static int modexp (int b, int e, int n); 
 
 
 // Performs the quantum Fourier transform on a system of qubits.
@@ -112,6 +115,60 @@ int grover_invert (int (*f) (int), int y, int n) {
 	return f(x) == y ? x : -1; 
 }
 
+
+// Uses Shor's algorithm to return a factor of the integer n. If n is composite,
+// returns a non-trivial factor (i.e. a factor other than n or 1). Otherwise,
+// if n is prime, returns 1.  
+int shor_factor (int n) {
+	if (n <= 1) throw runtime_error("n must be at least 2"); 
+	if (is_prime(n)) return 1; 
+	if (n % 2 == 0) return 2; // even numbers > 2 are trivial
+
+	// Need to check that n is not the power of an integer for the algorithm to
+	// work
+	int root = int_root(n); 
+	if (root != -1) return root; 
+
+	// choose m s.t. n^2 <= 2^m < 2*n^2
+	// log2(n^2) <= m <= log2(2 * n^2) = 1 + log2(n^2) 
+	int m = ceil(log2(pow(n, 2)));
+
+	const int ny = ceil(log2(n - 1)); // number of qubits in output of function f
+	const QuantumGate I(ny); 
+	const QuantumGate H = qgates::hadamard_gate(m) % I; 
+	QubitSystem q; 
+
+	const int MAX_ITER = 10; 
+	int niter = 0; 
+
+	do {
+		int a = n - 1; // arbitrary integer coprime to n
+
+		// Initialize a system of qubits long enough to represent the integers 0 to
+		// 2^m - 1 alongside an integer up to n - 1, then apply Hadamard gate to the
+		// first m qubits to create a uniform superposition.
+		q.init(m + ny); 
+		H * q; 
+
+		// Apply the function f(x) = a^x (mod n) to the system
+		auto f = std::bind(modexp, a, std::placeholders::_1, n);  
+		const QuantumGate Uf = qgates::function_gate(f, m, ny); 
+		Uf * q; 
+
+		// Find the period of f via quantum Fourier transform
+		qft(&q); 
+		// TODO: finish
+
+		niter++; 
+	} while (niter < MAX_ITER && (r % 2 != 0 || pow(a, r / 2) % n == -1)); 
+
+	return gcf(pow(a, r / 2) + 1, n); 
+}
+
+
+
+
+
 // Creates the "quantum oracle/black box" gate used by the Grover search 
 // algorithm. The gate maps a state |k> to  -|k> if the kth item of "list" 
 // matches the text match_text, and maps it to itself otherwise.  
@@ -152,6 +209,12 @@ static QuantumGate function_oracle (int (*f) (int), int y, int n) {
 static int r (int n) { 
 	double theta = asin(1. / sqrt(n)); 
 	return (int) round((PI / theta - 2.) / 4.); 
+}
+
+// Performs modular exponentiation. Given integers b, e, and n, returns 
+// y = b^e (mod n).
+static int modexp (int b, int e, int n) {
+	// TODO: make
 }
 
 

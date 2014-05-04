@@ -375,6 +375,17 @@ int gcf (int a, int b) {
 }
 
 
+// Tests whether n is prime, using the AKS primality test.
+bool is_prime (int n) {
+	if (n <= 1) throw invalid_argument("n must be greater than 1");
+ 
+//	http://www.dm.unito.it/~cerruti/ac/aks-crandall.pdf
+// TODO: finish, test
+
+
+}
+
+
 // Checks whether n is the k-th power of an integer for some k. If so, it 
 // returns the root r such that r^k = n. Otherwise, it returns -1.
 int int_root (int n) {
