@@ -375,43 +375,21 @@ int gcd (int a, int b) {
 }
 
 
-// Tests whether n is prime, using the AKS primality test.
-// See: 
-// http://en.wikipedia.org/wiki/AKS_primality_test
-// http://www.dm.unito.it/~cerruti/ac/aks-crandall.pdf
+// Tests whether n is prime.
+// This uses a naive algorithm that would be useless for numbers of substantial
+// size, but is fine for the purposes of QAS, which are understanding and 
+// simulating the use of quantum computing rather than actually solving 
+// difficult problem instances. 
 bool is_prime (int n) {
 	if (n <= 1) throw invalid_argument("n must be greater than 1");
-	// First, check that n is not the power of an integer
-	int root = int_root(n); 
-	if (root != -1) {
-		return false; 
-	}
 
-	// TEMPORARY NAIVE IMPLEMENTATION, to be replaced later
+	// trial division
 	for (int k = 2; k < floor(sqrt(n)); k++) { 
 		if (n % k == 0) { 
 			return false; 
 		}
 	}
 	return true; 
-
-	// Find the smallest r such that O_r(n) (the multiplicative order of n modulo
-	// r) > log2^2 n 
-	// TODO 
-
-	// if 1 < gcd(a,n) < n for some a <= r, n is composite. 
-	// TODO
-
-//	// If n <= r, n is prime
-//	if (n <= r) {
-//		return true; 
-// 	}
-//
-//	for (int a = 1; a <= floor(sqrt(totient(r)) * log2(n)); a++) { 
-//		// TODO 
-//	}
-//	
-//	return true; 
 }
 
 
