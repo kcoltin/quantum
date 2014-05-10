@@ -5,6 +5,7 @@
 #include "gate_factory.h"
 #include "quantum.h"
 #include "util.h"
+#include <functional>
 #include <stdexcept>
 using std::complex; 
 
@@ -127,6 +128,13 @@ QuantumGate fredkin_gate () {
 // It is easily shown that the map |x, y> --> |x, f(x) (+) y> is a bijection, 
 // which implies that Uf is a permutation matrix (and is therefore unitary).  
 QuantumGate function_gate (int (*f) (int), int m, int k) {
+	auto g = [f] (int x) { return f(x); }; 
+	return function_gate(g, m, k); 
+} 
+
+// Version of function_gate taking a C++11 functional rather than a function 
+// pointer. This version implements the actual functionality.  
+QuantumGate function_gate (std::function<int (int)> f, int m, int k) {
 	unsigned int n = m + k; // gate operates on an (m + k)-qubit system
 	complex<double> **matrix = czeros(pow(2, n), pow(2, n)); 
 	unsigned int x, y, i; 
@@ -145,7 +153,7 @@ QuantumGate function_gate (int (*f) (int), int m, int k) {
 
 	QuantumGate gate(n, matrix); 
 	return gate; 
-} 
+}
 
 
 // Grover diffusion operator, operating on n qubits. 

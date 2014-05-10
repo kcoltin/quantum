@@ -384,7 +384,7 @@ bool is_prime (int n) {
 	if (n <= 1) throw invalid_argument("n must be greater than 1");
 
 	// trial division
-	for (int k = 2; k < floor(sqrt(n)); k++) { 
+	for (int k = 2; k <= floor(sqrt(n)); k++) { 
 		if (n % k == 0) { 
 			return false; 
 		}

@@ -55,8 +55,8 @@ TEST (AlgorithmsTest, TestGroverInversion) {
 
 // Test Shor's algorithm
 TEST (AlgorithmsTest, TestShor) {
-	int composites[] = {4, 6, 10, 21, 35, 144}; // numbers to factor
-	const int LENGTH = 6; 
+	int composites[] = {4, 6, 9, 10, 12}; 
+	const int LENGTH = 5; 
 
 	for (int i = 0; i < LENGTH; i++) {
 		int n = composites[i]; 

@@ -150,7 +150,7 @@ int shor_factor (int n) {
 		H * q; 
 
 		// Apply the function f(x) = a^x (mod n) to the system
-		auto f = std::bind(modexp, a, std::placeholders::_1, n);  
+		auto f = [a, n] (int x) { return modexp(a, x, n); }; 
 		const QuantumGate Uf = qgates::function_gate(f, m, ny); 
 		Uf * q; 
 

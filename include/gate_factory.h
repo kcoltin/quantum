@@ -4,6 +4,7 @@
 #define GATE_FACTORY_H
 
 #include "quantum.h"
+#include <functional>
 
 namespace quantum_algorithm_simulator {
 
@@ -22,6 +23,7 @@ QuantumGate controlled_gate (const QuantumGate &U);
 QuantumGate toffoli_gate (); 
 QuantumGate fredkin_gate (); 
 QuantumGate function_gate (int (*f) (int), int m, int k); 
+QuantumGate function_gate (std::function<int (int)> f, int m, int k);
 QuantumGate grover_diffusion_operator (int n); 
 
 }
