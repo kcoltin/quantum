@@ -58,16 +58,15 @@ void QubitSystem::init (int n, int state) {
 	this->n = n; 
 	delete [] this->coeffs; 
 	this->coeffs = new complex<double>[(int) pow(2, n)]; 
+
+	if (state >= pow(2, n)) throw invalid_argument("invalid state");
 	this->collapse(state); // set system to pure state 
 }
 
 // Initializer for an n-qubit system. The coefficients are initialized such that
 // the system is in the pure state represented by the binary string STATE. 
 void QubitSystem::init (int n, const string state) { 
-	this->n = n; 
-	delete [] this->coeffs; 
-	this->coeffs = new complex<double>[(int) pow(2, n)]; 
-	this->collapse(bin_to_int(state)); 
+	this->init(n, bin_to_int(state));
 }
 
 // Destructor
