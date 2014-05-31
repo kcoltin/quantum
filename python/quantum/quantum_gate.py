@@ -4,7 +4,7 @@ from math import log
 import numpy
 from numpy import array, copy, eye, linalg
 from qubit_system import QubitSystem
-import _util
+from _util import EPS, is_unitary
 
 class QuantumGate(object):
     """Represents a quantum logic gate.
@@ -31,7 +31,7 @@ class QuantumGate(object):
         """
         # test that matrix is square and with dimensions that are a power of 2
         if matrix.ndim != 2 or matrix.shape[0] != matrix.shape[1] \
-           or abs(log(matrix.shape[0], 2) % 1) > util.EPS:
+           or abs(log(matrix.shape[0], 2) % 1) > EPS:
             raise ValueError('invalid matrix dimensions')
         self.__matrix = array(matrix)
 
@@ -87,7 +87,7 @@ class QuantumGate(object):
         """
         if index <= 0 or index + self.n() - 1 > qubits.n():
             raise ValueError('Dimension mismatch with gate and qubit system')
-        if not util.is_unitary(self.__matrix):
+        if not is_unitary(self.__matrix):
             raise RuntimeError('Non-unitary matrix')
 
         # construct a matrix to operate only on the desired qubits

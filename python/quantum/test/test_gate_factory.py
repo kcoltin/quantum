@@ -6,7 +6,7 @@ from gate_factory import controlled_gate, fredkin_gate, function_gate,\
 from numpy import array
 from quantum_gate import QuantumGate
 from qubit_system import QubitSystem
-import _util
+from _util import EPS
 
 class Test_gate_factory(unittest.TestCase):
     # Tests the factory method for producing a Pauli X-gate (aka "not" gate).
@@ -41,7 +41,7 @@ class Test_gate_factory(unittest.TestCase):
         H = hadamard_gate(N)
         ENTRY_VAL = 2.**(-N / 2.) # abs val of each entry
         H_exp = ENTRY_VAL * (2 * is_pos - 1) # expected H
-        self.assertTrue((abs(H.matrix() - H_exp) < util.EPS).all())
+        self.assertTrue((abs(H.matrix() - H_exp) < EPS).all())
 
 
     # Tests functions for producing controlled gates

@@ -8,7 +8,7 @@ import numpy
 from numpy.fft import fft
 from quantum_gate import tensor_power
 from qubit_system import QubitSystem
-import _util
+from _util import EPS
 
 class Test_algorithms(unittest.TestCase):
     # Test quantum Fourier transform
@@ -23,7 +23,7 @@ class Test_algorithms(unittest.TestCase):
         yhat = fft(q._QubitSystem__coeffs) / sqrt(2**N)
         qft(q)
         self.assertTrue(numpy.max(numpy.abs(q._QubitSystem__coeffs - yhat)) \
-                        < util.EPS)
+                        < EPS)
 
 
     # Tests Grover's search algorithm
