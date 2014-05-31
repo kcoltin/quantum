@@ -36,6 +36,14 @@ class QuantumGate(object):
         self.__matrix = array(matrix)
 
 
+    def __repr__(self):
+        return 'QuantumGate(' + repr(self.__matrix) + ')'
+
+
+    def __str__(self):
+        return 'QuantumGate(' + str(self.__matrix) + ')'
+
+
     def copy(self):
         """Deep copy"""
         return QuantumGate(self.__matrix)

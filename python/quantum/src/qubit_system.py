@@ -36,6 +36,14 @@ class QubitSystem(object):
         self.__coeffs[state] = 1.
 
 
+    def __repr__(self):
+        return '<qubit_system.QubitSystem object at ' + hex(id(self)) + '>'
+
+
+    def __str__(self):
+        return 'QubitSystem of ' + self.n() + ' quantum bits'
+
+
     def copy(self):
         raise TypeError('Cannot copy qubits: violation of no-cloning theorem')
 
