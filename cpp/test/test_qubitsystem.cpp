@@ -26,7 +26,7 @@ TEST (QubitSystemTest, TestMeasure) {
 	// Test probabilistic measurement: repeatedly measure superpositions of basis
 	// states and test that the outcome varies randomly
 	static const int N = 2; 
-	QuantumGate H = qgates::hadamard_gate() % qgates::hadamard_gate(); 
+	QuantumGate H = qgates::hadamard_gate(N);
 	static const int NTRIALS = 100; 
 	int nsuccess1 = 0, nsuccess2 = 0; // number of 1's in the first and second bit
 	for (int i = 0; i < NTRIALS; i++) { 

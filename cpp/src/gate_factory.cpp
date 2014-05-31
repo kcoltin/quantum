@@ -157,7 +157,7 @@ QuantumGate function_gate (std::function<int (int)> f, int m, int k) {
 
 
 // Grover diffusion operator, operating on n qubits. 
-// Every off-diagonal entry is 1/2^(n-1); diagonal entries are that value minus
+// Every non-diagonal entry is 1/2^(n-1); diagonal entries are that value minus
 // one. 
 // Note: at least one source I've see defines the operator as the negative of
 // this matrix; either definition works for Grover's algorithm.

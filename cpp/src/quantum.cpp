@@ -66,6 +66,9 @@ void QubitSystem::init (int n, int state) {
 // Initializer for an n-qubit system. The coefficients are initialized such that
 // the system is in the pure state represented by the binary string STATE. 
 void QubitSystem::init (int n, const string state) { 
+	if (state.length() != (unsigned int) n) 
+		throw invalid_argument("state must be a binary string of length n");
+
 	this->init(n, bin_to_int(state));
 }
 
@@ -133,11 +136,12 @@ void operator* (const QuantumGate &gate, QubitSystem &qubits){
 } 
 
 
-// Computes the tensor product of two systems of qubits. 
-// On return, the system q1 is overwritten with the tensor product of q1 and q2.
+// Combines two systems of qubits. 
+// On return, the coefficients of the system q1 are overwritten with the tensor 
+// product of the coefficients of  q1 and q2.
 // The system q2 is "erased" in that it is resized to a system of size zero. 
 // This represents the fact that the two systems are combined into a single 
-// system of separable states. 
+// system of separable states, and avoids violating the no-cloning theorem.  
 void operator* (QubitSystem &q1, QubitSystem &q2) {
 	// Number of qubits in the product system
 	int N = q1.n + q2.n; 
@@ -220,7 +224,7 @@ void QubitSystem::collapse (int bit_index, int observed_value) {
 	// equal to observed_value to zero.
 	// Iterate over the first state in each "block" of consecutive states where
 	// the bit given by bit_index is NOT equal to observed_value.  
-	// Note: the operator "observed_value ^ 1" maps 0 to 1 and vice versa. 
+	// Note that the operation "observed_value ^ 1" maps 0 to 1 and vice versa. 
 	for (int i = (observed_value ^ 1) * interval; i < this->n; i += interval * 2){
 		// Then, interate over each state within this block
 		for (int j = 0; j < interval; j++) {
@@ -368,8 +372,7 @@ void QuantumGate::act (QubitSystem *q) const {
 // 
 // It operates IN PLACE on the argument q, so the qubit system is changed
 // by operation of the gate. This setup, as opposed to returning a new system as
-// the product, a) is more realistic, and b) prevents cloning via multiplying a
-// qubit by (for example) the identity gate. 
+// the product, prevents violations of the no-cloning theorem. 
 void QuantumGate::act (QubitSystem *q, int index) const {
 	// Throw error if the dimensions don't fit
 	if (index <= 0 || index + this->n - 1 > q->N()) { 
