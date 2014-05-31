@@ -6,7 +6,7 @@ from gate_factory import controlled_gate, fredkin_gate, function_gate,\
 from numpy import array
 from quantum_gate import QuantumGate
 from qubit_system import QubitSystem
-import util
+import _util
 
 class Test_gate_factory(unittest.TestCase):
     # Tests the factory method for producing a Pauli X-gate (aka "not" gate).

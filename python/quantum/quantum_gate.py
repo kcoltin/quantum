@@ -4,7 +4,7 @@ from math import log
 import numpy
 from numpy import array, copy, eye, linalg
 from qubit_system import QubitSystem
-import util
+import _util
 
 class QuantumGate(object):
     """Represents a quantum logic gate.

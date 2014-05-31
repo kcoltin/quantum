@@ -1,2 +1,2 @@
-__all__ = ['src', 'test']
+__all__ = ['algorithms', 'gate_factory', 'quantum_gate', 'qubit_system']
 

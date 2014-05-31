@@ -8,7 +8,7 @@ import numpy
 from numpy.fft import fft
 from quantum_gate import tensor_power
 from qubit_system import QubitSystem
-import util
+import _util
 
 class Test_algorithms(unittest.TestCase):
     # Test quantum Fourier transform
