@@ -5,6 +5,7 @@
 from cmath import exp
 from math import pi, sqrt
 from numpy import outer
+
 from quantum_gate import QuantumGate
 
 def qft(q):

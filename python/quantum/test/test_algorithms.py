@@ -1,14 +1,19 @@
 # test_algorithms.py
 
+import sys
+sys.path.append('../..')
+
 import unittest
-from algorithms import qft
-from gate_factory import hadamard_gate, phase_shift_gate
 from math import pi, sqrt
 import numpy
 from numpy.fft import fft
-from quantum_gate import tensor_power
-from qubit_system import QubitSystem
-from _util import EPS
+
+import quantum
+from quantum.algorithms import qft
+from quantum.gate_factory import hadamard_gate, phase_shift_gate
+from quantum.quantum_gate import tensor_power
+from quantum.qubit_system import QubitSystem
+from quantum._util import EPS
 
 class Test_algorithms(unittest.TestCase):
     # Test quantum Fourier transform

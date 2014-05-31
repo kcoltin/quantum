@@ -1,12 +1,17 @@
 # test_gate_factory.py
 
+import sys
+sys.path.append('../..')
+
 import unittest
-from gate_factory import controlled_gate, fredkin_gate, function_gate,\
-                         hadamard_gate, toffoli_gate, x_gate
 from numpy import array
-from quantum_gate import QuantumGate
-from qubit_system import QubitSystem
-from _util import EPS
+
+import quantum
+from quantum.gate_factory import controlled_gate, fredkin_gate, function_gate,\
+                         hadamard_gate, toffoli_gate, x_gate
+from quantum.quantum_gate import QuantumGate
+from quantum.qubit_system import QubitSystem
+from quantum._util import EPS
 
 class Test_gate_factory(unittest.TestCase):
     # Tests the factory method for producing a Pauli X-gate (aka "not" gate).

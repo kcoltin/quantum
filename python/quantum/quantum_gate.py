@@ -3,6 +3,7 @@
 from math import log
 import numpy
 from numpy import array, copy, eye, linalg
+
 from qubit_system import QubitSystem
 from _util import EPS, is_unitary
 

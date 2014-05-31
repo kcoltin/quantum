@@ -1,11 +1,16 @@
 # test_quantum_gate.py
 
+import sys
+sys.path.append('../..')
+
 import unittest
-from gate_factory import cnot_gate, swap_gate, x_gate, y_gate, z_gate
 from numpy import array
-import quantum_gate
-from quantum_gate import QuantumGate
-from qubit_system import QubitSystem
+
+import quantum
+from quantum.gate_factory import cnot_gate, swap_gate, x_gate, y_gate, z_gate
+from quantum import quantum_gate
+from quantum.quantum_gate import QuantumGate
+from quantum.qubit_system import QubitSystem
 
 class Test_quantum_gate(unittest.TestCase):
     # Tests the action of multiplying a quantum gate by a qubit system.

@@ -1,8 +1,13 @@
 # test_qubit_system.py
 
+import sys
+sys.path.append('../..')
+
 import unittest
-from gate_factory import hadamard_gate
-from qubit_system import QubitSystem
+
+import quantum
+from quantum.gate_factory import hadamard_gate
+from quantum.qubit_system import QubitSystem
 
 class Test_qubit_system(unittest.TestCase):
     # Test measurement of a qubit system

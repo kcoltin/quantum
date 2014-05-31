@@ -5,6 +5,7 @@
 from cmath import exp
 from math import sqrt
 from numpy import array, eye, ones, zeros
+
 from quantum_gate import QuantumGate, tensor_power
 
 def x_gate():
