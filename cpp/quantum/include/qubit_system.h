@@ -1,50 +1,10 @@
-#ifndef QUANTUM_H
-#define QUANTUM_H
+#ifndef QUBIT_SYSTEM_H
+#define QUBIT_SYSTEM_H
 
+#include "quantum_gate.h"
 #include <complex>
 
 namespace quantum_algorithm_simulator {
-
-class QubitSystem; 
-
-// Represents a quantum logic gate.
-class QuantumGate {
-	private:
-	// Number of qubits that the gate operates on. A gate operating on n qubits is
-	// represented as a 2^n x 2^n matrix. 
-	int n; 
-	// unitary matrix representing the action of the gate
-	std::complex<double> **matrix; 
-
-	public:
-	QuantumGate (int n);
-	QuantumGate (int n, std::complex<double> **matrix); 
-	QuantumGate (int n, std::complex<double> **matrix, bool byref); 
-	QuantumGate (int n, const std::complex<double> *vector); 
-	QuantumGate (const QuantumGate &orig);
-	QuantumGate & operator= (const QuantumGate &orig); 
-	~QuantumGate (); 
-	
-	int N () const; 
-	void set (int i, int j, std::complex<double> val); 
-	std::complex<double> operator() (int i, int j) const; 
-	QuantumGate H () const; 
-	void act (QubitSystem *q) const; 
-	void act (QubitSystem *q, int index) const; 
-	QuantumGate & operator+= (const QuantumGate &other); 
-	QuantumGate & operator*= (const QuantumGate &other); 
-	QuantumGate & operator^= (int e); 
-	QuantumGate & operator%= (const QuantumGate &other); 
-
-	friend void operator* (const QuantumGate &gate, QubitSystem &qubits);  
-	friend QuantumGate operator+ (const QuantumGate &g1, const QuantumGate &g2); 
-	friend QuantumGate operator* (const QuantumGate &g1, const QuantumGate &g2); 
-	friend QuantumGate operator^ (const QuantumGate &g1, int e); 
-	friend QuantumGate operator% (const QuantumGate &g1, const QuantumGate &g2); 
-	friend QuantumGate tensor_pow (const QuantumGate &g, int e); 
-};
-
-
 
 // Represents a system of one or more qubits. 
 //

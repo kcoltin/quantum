@@ -3,7 +3,7 @@
 #ifndef GATE_FACTORY_H
 #define GATE_FACTORY_H
 
-#include "quantum.h"
+#include "quantum_gate.h"
 #include <functional>
 
 namespace quantum_algorithm_simulator {

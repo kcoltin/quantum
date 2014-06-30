@@ -1,7 +1,4 @@
-// Tests for the functionality of the QubitSystem class.
-
 #include "algorithms.h" 
-#include "quantum.h" 
 #include <gtest/gtest.h>
 using std::string;
 using namespace quantum_algorithm_simulator; 

@@ -3,7 +3,8 @@
 
 #include "algorithms.h"
 #include "gate_factory.h"
-#include "quantum.h"
+#include "quantum_gate.h"
+#include "qubit_system.h"
 #include "util.h"
 #include <cmath>
 #include <complex>
@@ -133,7 +134,7 @@ int shor_factor (int n) {
 
 	const int ny = ceil(log2(n - 1)); // number of qubits in output of function f
 	const QuantumGate I(ny); 
-	const QuantumGate H = qgates::hadamard_gate(m) % I; 
+	const QuantumGate H = kron(qgates::hadamard_gate(m), I); 
 
 	QubitSystem q; 
 	int a, r; 
@@ -174,7 +175,6 @@ int shor_factor (int n) {
 static QuantumGate search_oracle (const string &match_text, const string *list, 
                                   int n) {
 	QuantumGate gate(ceil(log2(n))); // identity gate
-
 	for (int i = 0; i < n; i++) { 
 		if (list[i] == match_text) { 
 			gate.set(i, i, -1.); 
@@ -191,7 +191,7 @@ static QuantumGate search_oracle (const string &match_text, const string *list,
 static QuantumGate function_oracle (int (*f) (int), int y, int n) { 
 	QuantumGate gate(n); // identity gate
 
-	for (int i = 0; i < n; i++) { 
+	for (int i = 0; i < pow(2, n); i++) { 
 		if (f(i) == y) {
 			gate.set(i, i, -1.); 
 		}
@@ -201,10 +201,10 @@ static QuantumGate function_oracle (int (*f) (int), int y, int n) {
 }
 
 
-// Function returning the optimal number of iterations for the algorithm. It is
-// important to stop at exactly this many iterations or else future iterations
-// may actually lower the probability of measuring the correct answer.  
-// See http://www.quantiki.org/wiki/Grover's_search_algorithm.
+// Function returning the optimal number of iterations for Grover's algorithm.
+// It is important to stop at exactly this many iterations or else future
+// iterations may actually lower the probability of measuring the correct
+// answer. See http://www.quantiki.org/wiki/Grover's_search_algorithm.
 static int r (int n) { 
 	double theta = asin(1. / sqrt(n)); 
 	return (int) round((PI / theta - 2.) / 4.); 

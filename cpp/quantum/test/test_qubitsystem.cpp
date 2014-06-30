@@ -1,7 +1,8 @@
 // Tests for the functionality of the QubitSystem class.
 
 #include "gate_factory.h" 
-#include "quantum.h" 
+#include "quantum_gate.h" 
+#include "qubit_system.h" 
 #include "util.h" 
 #include <gtest/gtest.h>
 using std::complex;

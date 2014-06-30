@@ -160,13 +160,35 @@ complex<double> ** sum (complex<double> **A, complex<double> **B, int n) {
 	return C; 
 }
  
-
 // Adds two n x n complex matrices, operating on the first matrix in place. That
 // is, on return the matrix A will be the sum of the original A and B.
 void sum_ip (complex<double> **A, complex<double> **B, int n) {
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) { 
 			A[i][j] += B[i][j]; 
+		}
+	}
+} 
+
+// Returns the difference of two n x n complex matrices. 
+complex<double> ** diff (complex<double> **A, complex<double> **B, int n) {
+	complex<double> **C = new_cmat(n, n); 
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { 
+			C[i][j] = A[i][j] - B[i][j]; 
+		}
+	}
+
+	return C; 
+}
+
+// Subtracts two n x n complex matrices, operating on the first matrix in place.
+// That is, on return the matrix A will be the difference of the original A
+// minus B.
+void diff_ip (complex<double> **A, complex<double> **B, int n) {
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { 
+			A[i][j] -= B[i][j]; 
 		}
 	}
 } 
@@ -279,8 +301,8 @@ void prod_ip (complex<double> **A, complex<double> **B, int n) {
 
 // Returns the Kronecker product of two complex matrices, an m x n matrix A and
 // a p x q matrix B. 
-complex<double> ** kron (complex<double> **A, complex<double> **B, int m, int n,
-                         int p, int q) {
+complex<double> ** kronecker (complex<double> **A, complex<double> **B, int m,
+                              int n, int p, int q) {
 	complex<double> **product = new_cmat(m * p, n * q); 
 	int i, j; 
 
@@ -358,7 +380,7 @@ bool is_unitary (complex<double> **U, int n) {
 }
 
 
-// Returns the greatest common factor of a and b using the Euclidean algorithm.
+// Returns the greatest common divisor of a and b using the Euclidean algorithm.
 int gcd (int a, int b) {
 	if (a <= 0 || b <= 0) 
 		throw invalid_argument ("arguments must be positive integers");

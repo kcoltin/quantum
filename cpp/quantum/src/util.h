@@ -24,6 +24,9 @@ std::complex<double> ** conj_transpose (std::complex<double> **A, int n);
 std::complex<double> ** sum (std::complex<double> **A, std::complex<double> **B,
                              int n); 
 void sum_ip (std::complex<double> **A, std::complex<double> **B, int n); 
+std::complex<double> ** diff(std::complex<double> **A, std::complex<double> **B,
+                             int n); 
+void diff_ip (std::complex<double> **A, std::complex<double> **B, int n); 
 
 std::complex<double> inner_prod (const std::complex<double> *x, 
                                  const std::complex<double> *y, int n); 
@@ -40,8 +43,9 @@ std::complex<double> ** prod (std::complex<double> **A,
 void prod_ip (std::complex<double> **A, std::complex<double> *x, int n); 
 void prod_ip (std::complex<double> **A, std::complex<double> **B, int m, int n);
 void prod_ip (std::complex<double> **A, std::complex<double> **B, int n);
-std::complex<double> ** kron(std::complex<double> **A, std::complex<double> **B,
-                             int m, int n, int p, int q);
+std::complex<double> ** kronecker(std::complex<double> **A,
+                                  std::complex<double> **B,
+                                  int m, int n, int p, int q);
 std::complex<double> ** mpow (std::complex<double> **A, int e, int n); 
 void mpow_ip (std::complex<double> **A, int e, int n); 
 

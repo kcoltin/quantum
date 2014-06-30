@@ -1,7 +1,7 @@
 #ifndef ALGORITHMS_H
 #define ALGORITHMS_H
 
-#include "quantum.h"
+#include "qubit_system.h"
 #include <string>
 
 namespace quantum_algorithm_simulator {

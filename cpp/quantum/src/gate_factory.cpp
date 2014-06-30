@@ -3,7 +3,7 @@
 // Functions in namespace qgates: factory functions for creating quantum gates.
 
 #include "gate_factory.h"
-#include "quantum.h"
+#include "quantum_gate.h"
 #include "util.h"
 #include <functional>
 #include <stdexcept>

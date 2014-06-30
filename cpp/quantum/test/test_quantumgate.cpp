@@ -1,7 +1,8 @@
 // Tests for the functionality of the QuantumGate class.
 
 #include "gate_factory.h"
-#include "quantum.h" 
+#include "quantum_gate.h" 
+#include "qubit_system.h" 
 #include "util.h"
 #include <gtest/gtest.h>
 using std::complex;
@@ -98,8 +99,8 @@ TEST (QuantumGateTest, TestSum) {
 	static const complex<double> mat11[] = {0., 0., 0., 1.}; 
 	QuantumGate gate11(1, mat11);
 	
-	QuantumGate g1 = gate00 % I; 
-	QuantumGate g2 = gate11 % X; 
+	QuantumGate g1 = kron(gate00, I); 
+	QuantumGate g2 = kron(gate11, X); 
 	g1 += g2; 
 
 	for (int i = 0; i < 4; i++) { 
@@ -174,18 +175,15 @@ TEST (QuantumGateTest, TestTensorProduct) {
 	                                               {0., {0., -1.}, 0., 0.}};
 	QuantumGate Y = qgates::y_gate(); 
 	const QuantumGate Z = qgates::z_gate(); 
-	const QuantumGate YZ = Y % Z; 
-	Y %= Z; // Test %= form as well
+	const QuantumGate YZ = kron(Y, Z); 
 	static const int N = 2; 
 
 	// Test correct dimension
 	EXPECT_EQ(N, YZ.N()); 
-	EXPECT_EQ(N, Y.N()); 
 
 	for (int i = 0; i < pow(2, N); i++) {
 		for (int j = 0; j < pow(2, N); j++) {
 			EXPECT_LT(abs(YZ(i,j) - YZ_MATRIX[i][j]), EPS); 
-			EXPECT_LT(abs(Y(i,j) - YZ_MATRIX[i][j]), EPS); 
 		}
 	}
 
