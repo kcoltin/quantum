@@ -4,12 +4,12 @@ import sys
 sys.path.append('../..')
 
 import unittest
-from numpy import array
+from numpy import array, eye
 
 import quantum
 from quantum.gate_factory import cnot_gate, swap_gate, x_gate, y_gate, z_gate
 from quantum import quantum_gate
-from quantum.quantum_gate import QuantumGate
+from quantum.quantum_gate import dot, QuantumGate
 from quantum.qubit_system import QubitSystem
 
 class Test_quantum_gate(unittest.TestCase):
@@ -58,11 +58,14 @@ class Test_quantum_gate(unittest.TestCase):
     # operations are implemented with simple one-liners so it's not really
     # necessary to test them all; this just tests a few representative ones.
     def test_linalg(self):
-        pass
-        # TODO:
-        # test H
-        # test dot
-        # test sum, difference
+        A = QuantumGate(array([[0., 1.],
+                               [0., 0.]]))
+        B = QuantumGate(array([[0., 0.],
+                               [1., 0.]]))
+        self.assertTrue((A.H().matrix() == B.matrix()).all())
+        X = A + B
+        self.assertTrue((X.matrix() == x_gate().matrix()).all())
+        self.assertTrue((dot(X, X).matrix() == eye(2)).all())
 
 
     # Tests the tensor product operation

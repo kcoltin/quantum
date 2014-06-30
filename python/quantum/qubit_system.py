@@ -41,7 +41,7 @@ class QubitSystem(object):
 
 
     def __str__(self):
-        return 'QubitSystem of ' + self.n() + ' quantum bits'
+        return 'QubitSystem of ' + str(self.n()) + ' quantum bits'
 
 
     def copy(self):
@@ -78,7 +78,7 @@ class QubitSystem(object):
         # Randomly observe a state, based on the probability amplitudes
         rand = random.random()
         cumprobs = cumsum(abs(self.__coeffs)**2)
-        state = min(nonzero(cumprobs >= rand)[0])
+        state = int(min(nonzero(cumprobs >= rand)[0])) # Note 1
 
         if bit_index is None:
             # collapse to the observed state
@@ -154,6 +154,10 @@ class QubitSystem(object):
 
 
 
+# NOTES
+# 1. The int() cast is to change the output of nonzero() from int64, which can
+#    cause weird errors - noticed when calling pow(a, b, c) where b is an int64
+#    and a, c are ints. 
 
 
 
