@@ -38,14 +38,8 @@ class QubitSystem {
 	void collapse (int bit_index, int observed_value); 
 
 	public: 
-	QubitSystem (); 
-	QubitSystem (int n); 
-	QubitSystem (int n, int state); 
-	QubitSystem (int n, const std::string state); 
-	void init (); 
-	void init (int n); 
-	void init (int n, int state); 
-	void init (int n, const std::string state); 
+	QubitSystem (int n=1, int state=0); 
+	void init (int n=1, int state=0); 
 	~QubitSystem (); 
 
 	int N () const; 
@@ -60,6 +54,8 @@ class QubitSystem {
 	friend void operator* (QubitSystem &q1, QubitSystem &q2);
 }; 
 
+
+int bin_to_int (const std::string bin); 
 
 
 }

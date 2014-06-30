@@ -58,7 +58,6 @@ int int_root (int n);
 double runif ();
 int rdunif (int a, int b);
 
-int bin_to_int (const std::string bin); 
 std::string int_to_bin (int n, int len); 
 int get_bit (int n, int index); 
 

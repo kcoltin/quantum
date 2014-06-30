@@ -487,26 +487,6 @@ static gsl_rng * init_runif () {
 }
 
 
-// Converts a string of 0s and 1s to the integer it represents in binary form. 
-// E.g. if str is the string "1010", then bin_to_int(str) would return 10. 
-int bin_to_int (string bin) {
-	int n = 0; 
-	int len = bin.length(); 
-	int bit; 
-
-	for (int i = 0; i < len; i++) { 
-		bit = bin[len-i-1];  
-		if (bit == '1') { 
-			n += 1 << i; // equals 2^i
-		} 
-		else if (bit != '0') {
-			throw invalid_argument("Argument must be string of 0s and 1s only");
-		}
-	}
-
-	return n; 
-} 
-
 // Converts an integer to a string that represents that integer in binary form.
 // len is the length of the string to return. 
 // Example: int_to_bin(5, 4) = "0101". 

@@ -15,46 +15,22 @@ using std::invalid_argument;
 
 namespace quantum_algorithm_simulator {
 
-// The constructors just call the corresponding initializer
-QubitSystem::QubitSystem () {
-	this->coeffs = NULL; 
-	this->init(); 
-}
-
-QubitSystem::QubitSystem (int n) {
-	this->coeffs = NULL; 
-	this->init(n); 
-}
-
+// Constructor just calls the initializer
 QubitSystem::QubitSystem (int n, int state) {
 	this->coeffs = NULL; 
 	this->init(n, state); 
 }
 
-QubitSystem::QubitSystem (int n, const string state) { 
-	this->coeffs = NULL; 
-	this->init(n, state); 
-}
-
-// Default initializer. Creates a single qubit in state |0>.
-void QubitSystem::init () {
-	this->n = 1; 
-	delete [] this->coeffs; 
-	this->coeffs = new complex<double>[2]; 
-	this->collapse(0); // set system to pure state |0>
-}
-
-// Initializer for an n-qubit system. The coefficients are initialized to 
-// [1, 0, 0, ..., 0]. 
-void QubitSystem::init (int n) {
-	this->n = n; 
-	delete [] this->coeffs; 
-	this->coeffs = new complex<double>[(int) pow(2, n)]; 
-	this->collapse(0); // set system to pure state |0000....0>
-}
 
 // Initializer for an n-qubit system. The coefficients are initialized such that
 // the system is in the pure state given by state. 
+//
+// Defaults to a single-qubit system in state |0>.
+//
+// Examples of initializing a system in state |010>:
+//   q.init(3, 2)
+//   or
+//   q.init(3, bin_to_int("010"))
 void QubitSystem::init (int n, int state) {
 	this->n = n; 
 	delete [] this->coeffs; 
@@ -62,15 +38,6 @@ void QubitSystem::init (int n, int state) {
 
 	if (state >= pow(2, n)) throw invalid_argument("invalid state");
 	this->collapse(state); // set system to pure state 
-}
-
-// Initializer for an n-qubit system. The coefficients are initialized such that
-// the system is in the pure state represented by the binary string STATE. 
-void QubitSystem::init (int n, const string state) { 
-	if (state.length() != (unsigned int) n) 
-		throw invalid_argument("state must be a binary string of length n");
-
-	this->init(n, bin_to_int(state));
 }
 
 // Destructor
@@ -254,6 +221,29 @@ int QubitSystem::get_observed_state () {
 	return index; 
 }
 
+
+// Converts a string of 0s and 1s to the integer it represents in binary form. 
+// E.g. if str is the string "1010", then bin_to_int(str) would return 10. 
+// This is here, rather than in util.cpp where it might seem to belong better,
+// so that it can be publically visible and used to do things like
+// q = QubitSystem(3, bin_to_int("011")).
+int bin_to_int (string bin) {
+	int n = 0; 
+	int len = bin.length(); 
+	int bit; 
+
+	for (int i = 0; i < len; i++) { 
+		bit = bin[len-i-1];  
+		if (bit == '1') { 
+			n += 1 << i; // equals 2^i
+		} 
+		else if (bit != '0') {
+			throw invalid_argument("Argument must be string of 0s and 1s only");
+		}
+	}
+
+	return n; 
+} 
 
 
 } 

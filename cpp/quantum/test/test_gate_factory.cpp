@@ -119,7 +119,7 @@ TEST (GateFactoryTest, TestFunctionGate) {
 
 	// Initial state - M-bit binary string for 6 plus random K-bit register 
 	static const string state0 = "011010"; 
-	QubitSystem q(N, state0); 
+	QubitSystem q(N, bin_to_int(state0)); 
 
 	// Expected output state - first M bits unchanged, followed by initial string
 	// added to f(x) mod 2 (where x = first M bits)
