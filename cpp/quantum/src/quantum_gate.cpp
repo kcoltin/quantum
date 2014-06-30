@@ -13,31 +13,18 @@ using std::invalid_argument;
 
 namespace quantum_algorithm_simulator {
 
-// Default constructor for a quantum gate operating on n qubits. Initialized to
-// the identity matrix. 
-QuantumGate::QuantumGate (int n) {
-	if (n <= 0) throw invalid_argument("n must be positive"); 
-	this->n = n; 
-	this->matrix = eyec(pow(2, n), pow(2, n)); 
-}
-
-
 // Constructs a new quantum gate operating on an n-qubit system, where the 
-// unitary matrix describing the action of the gate is given. Assigns the matrix
-// by reference. 
-QuantumGate::QuantumGate (int n, complex<double> **matrix) {
-	if (n <= 0) throw invalid_argument("n must be positive"); 
-	this->n = n; 
-	this->matrix = matrix; 
-}
-
-
-// Constructs a new quantum gate operating on an n-qubit system. If byref is
+// unitary matrix describing the action of the gate is given. If byref is
 // false, it assigns the given matrix by reference rather than copying its 
 // entries by value. 
+// By default, the matrix is the identity matrix and byref is true.
 QuantumGate::QuantumGate (int n, complex<double> **matrix, bool byref) {
 	if (n <= 0) throw invalid_argument("n must be positive"); 
 	this->n = n; 
+	if (matrix == NULL) {
+		matrix = eyec(pow(2, n), pow(2, n));
+		byref = true; // pointless to make a copy of a locally-allocated matrix
+	}
 	this->matrix = byref ? matrix : copym(matrix, pow(2, n), pow(2, n)); 
 } 
 

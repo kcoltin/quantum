@@ -17,9 +17,7 @@ class QuantumGate {
 	std::complex<double> **matrix; 
 
 	public:
-	QuantumGate (int n);
-	QuantumGate (int n, std::complex<double> **matrix); 
-	QuantumGate (int n, std::complex<double> **matrix, bool byref); 
+	QuantumGate (int n, std::complex<double> **matrix=NULL, bool byref=true); 
 	QuantumGate (int n, const std::complex<double> *vector); 
 	QuantumGate (const QuantumGate &orig);
 	QuantumGate & operator= (const QuantumGate &orig); 
