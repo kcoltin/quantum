@@ -1,6 +1,6 @@
 # algorithms.py
-#
-# Contains various algorithms for quantum computing.
+
+"""Contains various quantum computing algorithms."""
 
 from cmath import exp
 from math import asin, ceil, log, pi, sqrt

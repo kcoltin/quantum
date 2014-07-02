@@ -1,5 +1,8 @@
 # qubit_system.py
 
+"""Contains the class QubitSystem for representing a system of one or more
+qubits."""
+
 from math import log, sqrt
 from numpy import arange, array, cumsum, kron, nonzero, random, zeros
 
@@ -45,6 +48,8 @@ class QubitSystem(object):
 
 
     def copy(self):
+        """You can't make a copy of a QubitSystem: this enforces the no-cloning
+        theorem."""
         raise TypeError('Cannot copy qubits: violation of no-cloning theorem')
 
 
@@ -157,7 +162,7 @@ class QubitSystem(object):
 # NOTES
 # 1. The int() cast is to change the output of nonzero() from int64, which can
 #    cause weird errors - noticed when calling pow(a, b, c) where b is an int64
-#    and a, c are ints. 
+#    and a, c are ints.
 
 
 

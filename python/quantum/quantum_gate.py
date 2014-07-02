@@ -1,11 +1,14 @@
 # quantum_gate.py
 
+"""Contains the QuantumGate class and several closely related functions, for
+representing and working with quantum logic gates."""
+
 from math import log
 import numpy
 from numpy import array, copy, eye, linalg
 
-from qubit_system import QubitSystem
-from _util import EPS, is_unitary
+from quantum.qubit_system import QubitSystem
+from quantum._util import EPS, is_unitary
 
 class QuantumGate(object):
     """Represents a quantum logic gate.

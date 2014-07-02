@@ -28,9 +28,9 @@ def is_prime(n):
     """Tests whether n is prime.
 
     This uses a naive algorithm that would be useless for numbers of substantial
-    size, but is fine for the purposes of QAS, which are understanding and 
-    simulating the use of quantum computing rather than actually solving 
-    difficult problem instances. 
+    size, but is fine for the purposes of QAS, which are understanding and
+    simulating the use of quantum computing rather than actually solving
+    difficult problem instances.
     """
     if  n <= 1:
         raise ValueError('n must be greater than 1')
