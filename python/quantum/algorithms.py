@@ -159,18 +159,17 @@ def shor_factor(n):
 
 
 
+# Creates the "quantum oracle/black box" gate used by the Grover search
+# algorithm.
+
+# Args:
+#   match_text: Text to find in the list lst.
+#   lst: List of strings to be searched to find a string matching match_text.
+
+# Returns:
+#   A gate that maps a state |k> to  -|k> if the kth item of "list" matches
+#     the text match_text, and maps it to itself otherwise.
 def _search_oracle(match_text, lst):
-    """Creates the "quantum oracle/black box" gate used by the Grover search
-    algorithm.
-
-    Args:
-      match_text: Text to find in the list lst.
-      lst: List of strings to be searched to find a string matching match_text.
-
-    Returns:
-      A gate that maps a state |k> to  -|k> if the kth item of "list" matches
-        the text match_text, and maps it to itself otherwise.
-    """
     n = len(lst)
     N = int(ceil(log(n, 2))) # number of qubits needed
     gate = QuantumGate(eye(2**N)) # identity gate
@@ -180,18 +179,17 @@ def _search_oracle(match_text, lst):
     return gate
 
 
+# Creates the "quantum oracle/black box" gate used by the Grover function
+# inversion algorithm.
+
+# Args:
+#   f: Function to invert.
+#   y: Value of the function at which to evaluate the inverse.
+
+# Returns:
+#   A gate that maps a state |x> to  -|x> if f(x) = y, and maps it to itself
+#     otherwise.
 def _function_oracle(f, y, n):
-    """Creates the "quantum oracle/black box" gate used by the Grover function
-    inversion algorithm.
-
-    Args:
-      f: Function to invert.
-      y: Value of the function at which to evaluate the inverse.
-
-    Returns:
-      A gate that maps a state |x> to  -|x> if f(x) = y, and maps it to itself
-        otherwise.
-    """
     gate = QuantumGate(eye(2**n)) # identity gate
     for i in range(2**n):
         if f(i) == y:
@@ -200,12 +198,11 @@ def _function_oracle(f, y, n):
 
 
 
+# Function returning the optimal number of iterations for Grover's
+# algorithm. It is important to stop at exactly this many iterations or else
+# future iterations may actually lower the probability of measuring the
+# correct answer. See http://www.quantiki.org/wiki/Grover's_search_algorithm.
 def _r(n):
-    """Function returning the optimal number of iterations for Grover's
-    algorithm. It is important to stop at exactly this many iterations or else
-    future iterations may actually lower the probability of measuring the
-    correct answer. See http://www.quantiki.org/wiki/Grover's_search_algorithm.
-    """
     theta = asin(1. / sqrt(n))
     return int(round((pi / theta - 2.) / 4.))
 
