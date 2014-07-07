@@ -2,7 +2,7 @@
 
 \usepackage{amsmath, amssymb} 
 
-\newcommand{\cpp}{C{}\verb~++~}
+\newcommand{\cpp}{C{}\texttt{++}}
 
 \title{Quantum Algorithm Simulator (QAS)}
 \author{Kevin Coltin} 
@@ -16,16 +16,41 @@
 
 \section{Introduction} 
 
-QAS is a library of functions and classes for simulating the action of a quantum computer using \cpp. It contains two classes---\verb~QubitSystem~ and \verb~QuantumGate~---that simulate the two primary structures used in quantum computing, quantum bits (qubits) and gates that operate on systems of one or more qubits. 
+QAS is a library of functions and classes for simulating the action of a quantum computer using Python or \cpp. It contains two classes---\verb~QubitSystem~ and \verb~QuantumGate~---that simulate the two primary structures used in quantum computing, quantum bits (qubits) and gates that operate on systems of one or more qubits. 
 
 Encapsulation is used to enforce the limitations that make programming for a quantum computer fundamentally different than for a classical computer. The operations that can be performed on an object of the class \verb~QubitSystem~, which represents a system of one or more possibly entangled qubits, are essentially limited to applying the action of a unitary quantum gate on the system and ``observing'' the system, which collapses it to a pure state. This allows the user to design, implement, and test algorithms in a natural way under the constraints inherent to quantum computing. 
 
-The QAS library has an extremely compact and intuitive interface, making it easy to learn and use for anyone familiar with \cpp. It fits easily within a larger \cpp program, so that mixing classical and quantum programming is effortless. For examples of use, see the unit tests in the \verb~test~ directory. 
+The QAS library has an extremely compact and intuitive interface, making it easy to learn and use for anyone familiar with Python or \cpp. It fits easily within a larger Python or \cpp program, so that mixing classical and quantum programming is effortless. For examples of use, see the unit tests in the \verb~test~ directories (located in \verb~python/quantum~ and \verb~cpp/quantum~). 
 
 
 \section{The \texttt{QubitSystem} class}
 
 An object of the \verb~QubitSystem~ class represents a system of one or more qubits. Representing multiple qubits in a single object---rather than the more obvious object-oriented approach of having each instance of the class be a single qubit---makes it possible to realistically model the phenomenon of entanglement, wherein performing operations or measurements on one or more qubits may affect arbitrarily many other qubits. 
+
+\subsection{The \texttt{QubitSystem} class in Python}
+
+The data members of a \verb~QubitSystem~ object are as follows: 
+\begin{itemize}
+\item \verb~__coeffs~: Array of complex numbers representing the coefficients on each basis state of the system. Since a system of $n$ qubits has $2^n$ possible basis states, the length of \verb~__coeffs~ is always a power of 2---specifically, it equals $2^n$ where $n$ is the value returned by the member function \verb~self.n()~. The $k$th entry, \verb~__coeffs[k]~, represents the complex coefficient (the amplitude) on the basis state whose individual qubit values form the binary integer $k$ represented by \verb~self.n()~ binary digits. For example, if \verb~self.n()~ $= 4$, then \verb~__coeffs[0]~ would be the coefficient on the basis state $|0000\rangle$, \verb~__coeffs[13]~ would be the coefficient on the basis state $|1101\rangle$, and so on. The sum of the squares of the amplitudes is restricted to always equal one. 
+\end{itemize}
+
+The following public methods exist for the \verb~QubitSystem~ class:
+\begin{itemize}
+\item \verb~__init__(self, n=1, state=0)~: Creates a system containing \verb~n~ qubits in the pure state representing the integer \verb~state~ in binary digits. For example, calling \verb~QubitSystem(3, 2)~ would initialize a system in the state $|010\rangle$. 
+\item \verb~n(self)~: Returns the number of qubits in the system. 
+\item \verb~measure(self, bit_index=None)~: Performs a measurement on the system of qubits. If \verb~bit_index~ is \verb~None~ (or is omitted), this collapses the system to a pure state, where the amplitudes (represented by the array \verb~__coeffs~) are zero on all states except the observed state. The $k$th state (i.e., the state whose qubits form the binary digits of the integer $k$) is observed with probability given by $|$\verb~__coeffs[k]~$|^2$. 
+
+For example, suppose that \verb~q~ is a \verb~QubitSystem~ with \verb~q.n~$ = 2$ and \verb~q.coeffs~$ = \{1/\sqrt{2}, 0, 0.5 + 0.5i, 0\}$, i.e. a system of two qubits in the mixed state $1/\sqrt{2}|00\rangle + (0.5+0.5i)|10\rangle$. Then, calling \verb~q.measure()~ would return the integers 0 or 2 each with 50\% probability. 
+
+If \verb~bit_index~ is supplied, this method instead performs a measurement on a single qubit in the system, the \verb~bit_index~th qubit in order from left to right, starting with one. E.g., if the system \verb~q~ is in the pure state $|0110\rangle$, then \verb~q.measure(1)~ or \verb~q.measure(4)~ will return 0, and \verb~q.measure(2)~ or \verb~q.measure(3)~ will return 1. 
+
+\item \verb~smeasure(self)~: Like calling \verb~measure()~, but returns the state as a string of binary digits rather than an integer. E.g., calling \verb~q.smeasure()~ when \verb~q~ is in the pure state $|010\rangle$ will return the string \verb~"010"~. 
+
+\end{itemize} 
+
+
+
+\subsection{The \texttt{QubitSystem} class in \cpp}
 
 The data members of a \verb~QubitSystem~ object are as follows: 
 \begin{itemize}
@@ -33,21 +58,14 @@ The data members of a \verb~QubitSystem~ object are as follows:
 \item \verb~coeffs~: Array of complex numbers representing the coefficients on each basis state of the system. Since a system of $n$ qubits has $2^n$ possible basis states, the length of \verb~coeffs~ is always $2^n$. The $k$th entry, \verb~coeffs[k]~, represents the complex coefficient (the amplitude) on the basis state whose individual qubit values form the binary integer $k$ represented by \verb~n~ binary digits. For example, if \verb~n~ $= 4$, then \verb~coeffs[0]~ would be the coefficient on the basis state $|0000\rangle$, \verb~coeffs[13]~ would be the coefficient on the basis state $|1101\rangle$, and so on. The sum of the squares of the amplitudes is restricted to always equal one. 
 \end{itemize}
 
-The following constructors exist for the \verb~QubitSystem~ class. The class also has a corresponding \verb~init~ method for each constructor, so calling \\
-\hspace*{1em} \verb~QubitSystem q;~ \\
-\hspace*{1em} \verb~q.init(~\emph{args}\verb~);~ \\
-is always equivalent to calling \\
-\hspace*{1em} \verb~QubitSystem q(~\emph{args}\verb~);~ 
+The following public methods exist for the \verb~QubitSystem~ class: 
 \begin{itemize}
-\item \verb~QubitSystem ()~: Default constructor. Creates a system containing a single qubit in the state $|0\rangle$. 
-\item \verb~QubitSystem (int n)~: Creates a system containing \verb~n~ qubits in the state $|00...0\rangle$. 
-\item \verb~QubitSystem (int n, int state)~: Creates a system containing \verb~n~ qubits in the pure state representing the integer \verb~state~ in binary digits. For example, calling \verb~QubitSystem q(3, 2)~ would initialize a system in the state $|010\rangle$. 
-\item \verb~QubitSystem (int n, const std::string state)~: Creates a system containing \verb~n~ qubits in the pure state represented by the binary string \verb~state~. For example, calling \verb~QubitSystem q(4, "1100")~ would initialize a system in the state $|1100\rangle$. 
-\end{itemize}
+\item \verb~QubitSystem (int n=1, int state=0)~: Creates a system containing \verb~n~ qubits in the pure state representing the integer \verb~state~ in binary digits. For example, calling \verb~QubitSystem q(3, 2)~ would initialize a system in the state $|010\rangle$. Defaults to a single-qubit system in state $|0\rangle$.
+
 Note that the copy constructor and copy assignment operator for the class are not public methods: this prevents violations of the no-cloning theorem, which states that it is impossible to copy the state of an arbitrary system of qubits. 
 
-The other public methods of the class are: 
-\begin{itemize}
+\item \verb~void init (int n=1, int state=0)~: Equivalent to calling the constructor with the same arguments. Useful for re-initializing a variable already in use.
+
 \item \verb~int N ()~: Returns the value of the private member variable \verb~n~, the number of qubits in the system. 
 \item \verb~int measure ()~: Performs a measurement on the system of qubits. This collapses the system to a pure state, where the amplitudes (represented by the array \verb~coeffs~) are zero on all states except the observed state. The $k$th state (i.e., the state whose qubits form the binary digits of the integer $k$) is observed with probability given by $|$\verb~coeffs[k]~$|^2$. 
 
@@ -76,6 +94,56 @@ A gate is represented by a unitary matrix $M$ such that performing the action of
 \end{array}\right) \] 
 (the swap gate). When $G$ acts on $q$, the coefficient vector $(a, b, c, d)$ is multiplied by $M$, which changes the state of $q$ to be $a|00\rangle + c|01\rangle + b|10\rangle + d|11\rangle$. 
 
+\subsection{The \texttt{QuantumGate} class in Python}
+
+Objects of the class \verb~QuantumGate~ have the following data member: 
+\begin{itemize} 
+\item \verb~__matrix~: A two-dimensional Numpy array of complex numbers representing the coefficients of the unitary matrix that represents the action of the quantum gate. The dimensions of the array are always $2^n \times 2^n$, since a gate operating on a system of $n$ qubits must operate on a vector of amplitudes of $2^n$ possible basis states. 
+
+\end{itemize} 
+
+The \verb~QuantumGate~ class has the following public methods and related functions: 
+\begin{itemize}
+\item \verb~__init__(self, matrix)~: Creates a gate defined by the given matrix. The argument must be a two-dimensional Numpy array of size $2^n \times 2^n$. 
+
+\item \verb~copy(self)~: Creates a ``deep copy'' whose matrix are equal (by reference, not value) to that of the original gate. 
+
+\item \verb~n(self)~: Returns the value of the private member variable \verb~n~, the number of qubits that the gate acts on.
+
+\item \verb~matrix(self)~ and bracket operators: Used for getting and setting elements of \verb~__matrix~. 
+
+\item \verb~H(self)~: Returns the quantum gate defined by the conjugate transpose of the current gate's matrix. Analogous to taking the conjugate transpose of the member variable \verb~__matrix~. 
+
+\item \verb~act(self, qubits, index=1)~ and the operator \verb~*~: The method \verb~act~ applies the action of the quantum gate on a (proper or improper) subset of the given system of qubits. Specifically, if \verb~qubits~ is a system of $n$ qubits and the gate operates on $m$ qubits (where $m \le n$ of necessity), then the action of the gate is applied to the \verb~index~th through (\verb~index~$ + m - 1$)th qubits in the system. If the optional argument \verb~index~ is omitted, it is set to 1.
+
+The operator \verb~*~ is shorthand for calling \verb~act~ with one argument, that is: \\ 
+\hspace*{1em} \verb~G * q;~ \\ 
+is equivalent to \\
+\hspace*{1em} \verb~G.act(q);~. \\ 
+The \verb~*~ operator is to be preferred whenever the second argument is unnecessary as it is closer to the mathematical notation.  
+
+For example, let \verb~G~ be the swap gate as defined above, and let \verb~q~ be a system of qubits in the state 
+\[ a|000\rangle + b|001\rangle + c|010\rangle + d|011\rangle + e|100\rangle + f|101\rangle + g|110\rangle + h|111\rangle .\] 
+Then, taking \\
+\hspace*{1em} \verb~G.act(q);~\\
+or\\
+\hspace*{1em} \verb~G * q;~\\
+would put the system into the state
+\[ a|000\rangle + b|001\rangle + e|010\rangle + f|011\rangle + c|100\rangle + d|101\rangle + g|110\rangle + h|111\rangle, \] 
+while taking \\
+\hspace*{1em} \verb~G.act(q, 2);~\\
+instead would put the system into the state
+\[ a|000\rangle + c|001\rangle + b|010\rangle + d|011\rangle + e|100\rangle + g|101\rangle + f|110\rangle + h|111\rangle .\] 
+
+Note: The method \verb~act~ (and hence the \verb~*~ operator) always checks that the gate's matrix is unitary before applying it to a system of qubits. If the programmer creates a gate that is not unitary, an exception will be thrown whenever the gate is used. 
+
+\item Various linear-algebra operations on quantum gates: The operators \verb~+~, \verb~-~, and \verb~*~ are respectively used to add, subtract, and multiply (using standard matrix multiplication) two quantum gates. The operator \verb~**~ raises a gate's matrix to an integer power, the function \verb~kron(A, B)~ returns the tensor product of gates \verb~A~ and \verb~B~, and the function \verb~tensor_power(G, e)~ returns the tensor product of a gate \verb~G~ tensored with itself \verb~e~ times. 
+
+\end{itemize} 
+
+
+\subsection{The \texttt{QuantumGate} class in \cpp}
+
 Objects of the class \verb~QuantumGate~ have the following data members: 
 \begin{itemize} 
 \item \verb~n~: Positive integer representing the number of qubits that the gate operates on. For instance, the swap gate in the example above operates on two qubits. 
@@ -84,19 +152,14 @@ Objects of the class \verb~QuantumGate~ have the following data members:
 
 \end{itemize} 
 
-The \verb~QuantumGate~ class includes the following constructors: 
+The \verb~QuantumGate~ class has the following public methods and friend functions: 
 \begin{itemize}
-\item \verb~QuantumGate (int n)~: Default constructor for a quantum gate operating on \verb~n~ qubits. The gate is initialized to the identity gate---that is, the gate represented by the $2^n \times 2^n$ identity matrix, whose application has no effect on a qubit system. 
-
-\item \verb~QuantumGate (int n, std::complex<double> **matrix, bool byref)~: Creates a gate operating on \verb~n~ qubits defined by the given matrix. The second argument must be a two-dimensional array of size $2^n \times 2^n$. If the optional argument \verb~byref~ is omitted or is \verb~true~, then the member \verb~this->matrix~ is assigned by reference to equal the argument \verb~matrix~. If \verb~byref~ is \verb~true~, then \verb~this->matrix~ is a copy of the argument \verb~matrix~. 
+\item \verb~QuantumGate (int n, std::complex<double> **matrix=NULL, bool byref=true)~: Creates a gate operating on \verb~n~ qubits defined by the given matrix. The second argument must be a two-dimensional array of size $2^n \times 2^n$. If it is omitted, the identity gate is created. If the optional argument \verb~byref~ is omitted or is \verb~true~, then the member \verb~this->matrix~ is assigned by reference to equal the argument \verb~matrix~. If \verb~byref~ is \verb~true~, then \verb~this->matrix~ is a copy of the argument \verb~matrix~. 
 
 \item \verb~QuantumGate (int n, const complex<double *vector)~: Creates a gate operating on \verb~n~ qubits, defined by the matrix whose coefficients are given by the argument \verb~vector~ in row-major order. \verb~vector~ must be a complex array of length $2^{2n}$.
 
-\end{itemize} 
-The class also implements a copy constructor and copy assignment operator that work in the usual way, i.e. by creating a new \verb~QuantumGate~ whose fields \verb~n~ and \verb~matrix~ are equal (by value, not reference) to those of the original gate. 
+\item The class also implements a copy constructor and copy assignment operator that work in the usual way, i.e. by creating a new \verb~QuantumGate~ whose fields \verb~n~ and \verb~matrix~ are equal (by value, not reference) to those of the original gate. 
 
-The class also contains the following public methods and friend functions: 
-\begin{itemize} 
 \item \verb~int N ()~: Returns the value of the private member variable \verb~n~, the number of qubits that the gate acts on.
 
 \item \verb~void set (int i, int j, std::complex<double> val)~ and \\
@@ -127,28 +190,48 @@ instead would put the system into the state
 
 Note: The method \verb~act~ (and hence the \verb~*~ operator) always checks that the gate's matrix is unitary before applying it to a system of qubits. If the programmer creates a gate that is not unitary, an exception will be thrown whenever the gate is used. 
 
-\item Various linear-algebra operations on quantum gates: The operators \verb~+~, \verb~-~, \verb~*~, and \verb~%~ are respectively used to add, subtract, multiply using standard matrix multiplication, and multiply using the tensor product two quantum gates. The operator \verb~^~ raises a gate's matrix to an integer power, and the function \verb~QuantumGate tensor_pow (const QuantumGate &g, int e)~ returns the tensor product of a gate \verb~g~ tensored with itself \verb~e~ times. 
+\item Various linear-algebra operations on quantum gates: The operators \verb~+~, \verb~-~, and \verb~*~ are respectively used to add, subtract, and multiply (using standard matrix multiplication) two quantum gates. The operator \verb~^~ raises a gate's matrix to an integer power, the function \verb~QuantumGate kron (const QuantumGate &A, const QuantumGate &B)~ returns the tensor product of gates \verb~A~ and \verb~B~, and the function \verb~QuantumGate tensor_power (const QuantumGate &G, int e)~ returns the tensor product of a gate \verb~G~ tensored with itself \verb~e~ times. 
 
 \end{itemize} 
 
 
-\section{The file \texttt{gate\textunderscore{}factory.cpp}} 
+\section{The Gate Factory module} 
 
-The file \verb~gate_factory.cpp~ contains factory functions for creating various types of commonly used quantum gates, such as the Pauli-X gate (also known as the quantum NOT gate), swap gate, and Toffoli gate. Each function in the file is explained by a brief comment preceding it. 
+The files \verb~python/quantum/gate_factory.py~ and \verb~cpp/quantum/src/gate_factory.cpp~ contain factory functions for creating various types of commonly used quantum gates, such as the Pauli-X gate (also known as the quantum NOT gate), swap gate, and Toffoli gate. Each function is explained by a brief comment or docstring within the two source files. 
 
 
 \section{Quantum algorithms} 
 
 The following algorithms are included in the QAS system: 
 \begin{itemize} 
-\item \verb~void qft (QubitSystem *q)~: Performs the quanum Fourier transform on a system of qubits. This is equivalent to performing the discrete Fourier transform in-place on the vector of amplitudes \verb~q->coeffs~. 
+\item Quantum Fourier transform (QFT):\\
+\begin{tabular}{ll}
+\verb~qft(q)~ & (Python) \\
+\verb~void qft(QubitSystem *q)~ & (\cpp) 
+\end{tabular} \\
+Performs the quantum Fourier transform on a system of qubits. This is equivalent to performing the discrete Fourier transform in-place on the vector of amplitudes \verb~q->coeffs~ (\cpp) or \verb~q.__coeffs~ (Python).
 
-\item \verb~int grover_search (const std::string &match_text,~ \\
-\verb~const std::string *list, int n)~: Uses Grover's search algorithm to search the array of strings \verb~list~ for the string \verb~match_text~. It returns the index \verb~k~ such that the string \verb~list[k]~ is the same as \verb~match_text~. If two or more such values \verb~k~ exist, it may return any one of them. If no element of \verb~list~ matches \verb~match_text~, returns $-1$. 
+\item Grover's search algorithm:\\
+\begin{tabular}{ll}
+\verb~grover_search(match_text, lst)~ & (Python) \\
+\verb~int grover_search(const std::string &match_text,~ \\
+\hspace{9em} \verb~const std::string *list, int n)~ & (\cpp) 
+\end{tabular} \\
+Uses Grover's search algorithm to search the array of strings \verb~list~ (or list of strings \verb~lst~, in Python) for the string \verb~match_text~. It returns the index \verb~k~ such that the string \verb~list[k]~ is the same as \verb~match_text~. If two or more such values \verb~k~ exist, it may return any one of them. If no element of \verb~list~ matches \verb~match_text~, returns $-1$. 
 
-\item \verb~int grover_invert (int (*f) (int), int y, int n)~: Uses Grover's algorithm to invert a function. The function \verb~f~ must map a sequence of \verb~n~ bits (which can be thought of as the binary representation of an integer between 0 and $2^n - 1$ inclusive) to another sequence of bits of any positive length (which can again be thought of as a binary integer). Calling \verb~grover_invert(f, y, n)~ returns the integer $x \in \{0, 1, \dots, 2^n-1\}$ such that $f(x) = y$. If two or more such values $x$ exist, it may return any one of them. If no such $x$ exists, it returns $-1$. 
+\item Grover's function inversion algorithm:\\
+\begin{tabular}{ll}
+\verb~grover_invert(f, y, n)~ & (Python) \\
+\verb~int grover_invert(int (*f) (int), int y, int n)~ & (\cpp)  
+\end{tabular} \\
+Uses Grover's algorithm to invert a function. The function \verb~f~ must map a sequence of \verb~n~ bits (which can be thought of as the binary representation of an integer between 0 and $2^n - 1$ inclusive) to another sequence of bits of any positive length (which can again be thought of as a binary integer). Calling \verb~grover_invert(f, y, n)~ returns the integer $x \in \{0, 1, \dots, 2^n-1\}$ such that $f(x) = y$. If two or more such values $x$ exist, it may return any one of them. If no such $x$ exists, it returns $-1$. 
 
-\item \verb~int shor_factor (int n)~: Implements Shor's factorization algorithm. Given an integer $n$, it returns a non-trivial prime factor of $n$ if $n$ is composite. If $n$ is prime, returns 1. 
+\item Shor's algorithm: \\
+\begin{tabular}{ll}
+\verb~shor_factor(n)~ & (Python) \\
+\verb~int shor_factor (int n)~ & (\cpp) 
+\end{tabular} \\
+Implements Shor's factorization algorithm. Given an integer $n$, it returns a non-trivial prime factor of $n$ if $n$ is composite. If $n$ is prime, returns 1. 
 
 \end{itemize} 
 
